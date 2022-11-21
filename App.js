@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import request from "request";
+import Icon from "./src/icon";
 
 var access_token;
 var refresh_token;
@@ -21,7 +22,7 @@ export default function App() {
     window.location.assign(
       "https://accounts.spotify.com/authorize?" + params.toString()
     );
-  } else if (!access_token) {
+  } else if (!refresh_token) {
     request.post(
       {
         url: "https://accounts.spotify.com/api/token",
@@ -65,20 +66,10 @@ export default function App() {
                 (error, response, body) => {
                   setPlaylists(
                     body.items.map((playlist) => ({
+                      id: playlist.id,
                       name: playlist.name,
                       tracks: playlist.tracks.href,
-                      image: (
-                        <Image
-                          source={playlist.images[0].url}
-                          style={{
-                            width: 100,
-                            height: 100,
-                            margin: 10,
-                            border: "2px solid #d6c05c",
-                            borderRadius: 5,
-                          }}
-                        />
-                      ),
+                      image: playlist.images[0].url,
                     }))
                   );
                 }
@@ -123,118 +114,134 @@ export default function App() {
             json: true,
           },
           (error, response, body) => {
-            if (body) {
-              const device_id = body.device.id;
-              const is_playing = body.is_playing;
+            if (!body) {
+              alert("spotify não esta aberto");
+              return;
+            }
+            const device_id = body.device.id;
+            const is_playing = body.is_playing;
+            request.get(
+              {
+                url: "https://api.spotify.com/v1/me/player/queue",
+                headers: { Authorization: "Bearer " + access_token },
+                json: true,
+              },
+              (error, response, body) => {
+                if (body.queue.length > 1) {
+                  alert("você ja tem musicas na fila");
+                  return;
+                }
+                request.get(
+                  {
+                    url: href,
+                    headers: { Authorization: "Bearer " + access_token },
+                    json: true,
+                  },
+                  (error, response, body) => {
+                    function shuffle(array) {
+                      var currentIndex = array.length,
+                        randomIndex;
 
-              request.get(
-                {
-                  url: href,
-                  headers: { Authorization: "Bearer " + access_token },
-                  json: true,
-                },
-                (error, response, body) => {
-                  function shuffle(array) {
-                    var currentIndex = array.length,
-                      randomIndex;
+                      // While there remain elements to shuffle.
+                      while (currentIndex != 0) {
+                        // Pick a remaining element.
+                        randomIndex = Math.floor(Math.random() * currentIndex);
+                        currentIndex--;
 
-                    // While there remain elements to shuffle.
-                    while (currentIndex != 0) {
-                      // Pick a remaining element.
-                      randomIndex = Math.floor(Math.random() * currentIndex);
-                      currentIndex--;
-
-                      // And swap it with the current element.
-                      [array[currentIndex], array[randomIndex]] = [
-                        array[randomIndex],
-                        array[currentIndex],
-                      ];
+                        // And swap it with the current element.
+                        [array[currentIndex], array[randomIndex]] = [
+                          array[randomIndex],
+                          array[currentIndex],
+                        ];
+                      }
                     }
-                  }
-                  const tracks = body.items.map((value) => value.track);
-                  shuffle(tracks);
+                    const tracks = body.items.map((value) => value.track);
+                    shuffle(tracks);
 
-                  const query = new URLSearchParams({
-                    uri: tracks.pop().uri,
-                    device_id: device_id,
-                  });
-                  request.post(
-                    {
-                      url:
-                        "https://api.spotify.com/v1/me/player/queue?" +
-                        query.toString(),
-                      headers: { Authorization: "Bearer " + access_token },
-                      json: true,
-                    },
-                    () => {
-                      const query = new URLSearchParams({
-                        device_id: device_id,
-                      });
-                      request.post(
-                        {
-                          url:
-                            "https://api.spotify.com/v1/me/player/next?" +
-                            query.toString(),
-                          headers: { Authorization: "Bearer " + access_token },
-                          json: true,
-                        },
-                        () => {
-                          if (!is_playing) {
-                            const query = new URLSearchParams({
-                              device_id: device_id,
-                            });
-                            request.put(
-                              {
-                                url:
-                                  "https://api.spotify.com/v1/me/player/play?" +
-                                  query.toString(),
-                                headers: {
-                                  Authorization: "Bearer " + access_token,
-                                },
-                                json: true,
-                              },
-                              () => {
-                                tracks.forEach((track, index) => {
-                                  const query = new URLSearchParams({
-                                    uri: track.uri,
-                                    device_id: device_id,
-                                  });
-                                  request.post({
-                                    url:
-                                      "https://api.spotify.com/v1/me/player/queue?" +
-                                      query.toString(),
-                                    headers: {
-                                      Authorization: "Bearer " + access_token,
-                                    },
-                                    json: true,
-                                  });
-                                });
-                              }
-                            );
-                          } else {
-                            tracks.forEach((track, index) => {
+                    const query = new URLSearchParams({
+                      uri: tracks.pop().uri,
+                      device_id: device_id,
+                    });
+                    request.post(
+                      {
+                        url:
+                          "https://api.spotify.com/v1/me/player/queue?" +
+                          query.toString(),
+                        headers: { Authorization: "Bearer " + access_token },
+                        json: true,
+                      },
+                      () => {
+                        const query = new URLSearchParams({
+                          device_id: device_id,
+                        });
+                        request.post(
+                          {
+                            url:
+                              "https://api.spotify.com/v1/me/player/next?" +
+                              query.toString(),
+                            headers: {
+                              Authorization: "Bearer " + access_token,
+                            },
+                            json: true,
+                          },
+                          () => {
+                            if (!is_playing) {
                               const query = new URLSearchParams({
-                                uri: track.uri,
                                 device_id: device_id,
                               });
-                              request.post({
-                                url:
-                                  "https://api.spotify.com/v1/me/player/queue?" +
-                                  query.toString(),
-                                headers: {
-                                  Authorization: "Bearer " + access_token,
+                              request.put(
+                                {
+                                  url:
+                                    "https://api.spotify.com/v1/me/player/play?" +
+                                    query.toString(),
+                                  headers: {
+                                    Authorization: "Bearer " + access_token,
+                                  },
+                                  json: true,
                                 },
-                                json: true,
+                                () => {
+                                  tracks.forEach((track, index) => {
+                                    const query = new URLSearchParams({
+                                      uri: track.uri,
+                                      device_id: device_id,
+                                    });
+                                    request.post({
+                                      url:
+                                        "https://api.spotify.com/v1/me/player/queue?" +
+                                        query.toString(),
+                                      headers: {
+                                        Authorization: "Bearer " + access_token,
+                                      },
+                                      json: true,
+                                    });
+                                  });
+                                }
+                              );
+                            } else {
+                              tracks.forEach((track, index) => {
+                                const query = new URLSearchParams({
+                                  uri: track.uri,
+                                  device_id: device_id,
+                                });
+                                request.post({
+                                  url:
+                                    "https://api.spotify.com/v1/me/player/queue?" +
+                                    query.toString(),
+                                  headers: {
+                                    Authorization: "Bearer " + access_token,
+                                  },
+                                  json: true,
+                                });
                               });
-                            });
+                            }
                           }
-                        }
-                      );
-                    }
-                  );
-                }
-              );
-            }
+                        );
+                      }
+                    );
+                  }
+                );
+              }
+            );
           }
         );
       }
@@ -255,40 +262,10 @@ export default function App() {
         Adiciona Playlist Embaralhada Para Fila
       </Text>
       <View style={styles.grid}>
-        {playlists.map((playlist, index) => (
-          <Pressable
-            key={playlist.name}
-            style={styles.button}
-            onPress={() => addToQueue(playlist.tracks)}
-          >
-            {playlist.image}
-            <Text
-              style={{
-                height: "100%",
-                width: "100%",
-                textAlign: "center",
-                fontSize: 15,
-                color: "#d6c05c",
-                fontWeight: "bold",
-              }}
-            >
-              {playlist.name}
-            </Text>
-          </Pressable>
+        {playlists.map((playlist) => (
+          <Icon key={playlist.id} playlist={playlist} onPress={addToQueue} />
         ))}
       </View>
-      <Text
-        style={{
-          margin: 20,
-          fontSize: "100%",
-          fontWeight: "bold",
-          color: "#74a1e8",
-          textAlign: "center",
-        }}
-      >
-        spotify tem que estar aberto para adicionar uma playlist na fila (pode
-        ser em outro dispositivo)
-      </Text>
     </View>
   );
 }
@@ -306,12 +283,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-  },
-  button: {
-    width: 120,
-    margin: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

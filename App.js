@@ -329,11 +329,7 @@ export default function App() {
       </Text>
       <View style={styles.grid}>
         {playlists.map((playlist) => (
-          <Icon
-            key={playlist.id}
-            playlist={playlist}
-            onPress={createShuffledPlaylist}
-          />
+          <Icon key={playlist.id} playlist={playlist} onPress={addToQueue} />
         ))}
       </View>
       <Button

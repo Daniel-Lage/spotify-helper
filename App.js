@@ -10,23 +10,28 @@ export default function App() {
   const [playlists, setPlaylists] = useState([]);
   const params = new URLSearchParams(window.location.search);
 
-  if (!params.get("code")) {
+  function refresh() {
     const params = new URLSearchParams({
       response_type: "code",
       client_id: "ed123287113345c49338d1cf20bec90e",
-      scope:
-        "user-read-playback-state user-modify-playback-state user-read-private user-read-email playlist-modify-public playlist-modify-private",
+      scope: [
+        "user-read-playback-state",
+        "user-modify-playback-state",
+        "user-read-private",
+      ].join(" "),
       redirect_uri: window.location.origin,
     });
     window.location.assign(
       "https://accounts.spotify.com/authorize?" + params.toString()
     );
+  }
+
+  if (!params.get("code")) {
+    refresh();
     return;
   } else {
     auth_code = params.get("code");
   }
-
-  console.log(auth_code);
 
   if (!refresh_token) {
     // get refresh token
@@ -45,16 +50,8 @@ export default function App() {
         json: true,
       },
       (error, response, body) => {
-        if (!body.access_token) {
-          const params = new URLSearchParams({
-            response_type: "code",
-            client_id: "ed123287113345c49338d1cf20bec90e",
-            scope: "user-read-playback-state user-modify-playback-state",
-            redirect_uri: window.location.origin,
-          });
-          window.location.assign(
-            "https://accounts.spotify.com/authorize?" + params.toString()
-          );
+        if (body.error) {
+          refresh();
           return;
         }
         const access_token = body.access_token;
@@ -133,8 +130,6 @@ export default function App() {
               return;
             }
             const device_id = body.device.id;
-            console.log(body);
-            const is_playing = body.is_playing;
 
             request.get(
               {
@@ -145,10 +140,9 @@ export default function App() {
               (error, response, body) => {
                 function get_shuffled_array(array) {
                   const newArray = [];
-                  for (var x = array.length - 1; x > -1; x--) {
-                    const index = Math.floor(Math.random() * x);
-                    newArray.push(array[index]);
-                    array.splice(index, 1);
+                  while (array.length) {
+                    const index = Math.floor(Math.random() * array.length);
+                    newArray.push(array.splice(index, 1)[0]);
                   }
                   return newArray;
                 }
@@ -161,6 +155,7 @@ export default function App() {
                   uri: tracks.pop().uri,
                   device_id: device_id,
                 });
+
                 request.post(
                   {
                     url:
@@ -170,8 +165,8 @@ export default function App() {
                     json: true,
                   },
                   (error, response, body) => {
-                    if (body.error) {
-                      console.log(body);
+                    if (body) {
+                      console.log("request: add first track to queue", body);
                       return;
                     }
                     const query = new URLSearchParams({
@@ -188,49 +183,11 @@ export default function App() {
                         json: true,
                       },
                       (error, response, body) => {
-                        if (body.error) {
-                          console.log(body);
+                        if (body) {
+                          console.log("request: skip track", body);
                           return;
                         }
-                        if (!is_playing) {
-                          const query = new URLSearchParams({
-                            device_id: device_id,
-                          });
-                          request.put(
-                            {
-                              url:
-                                "https://api.spotify.com/v1/me/player/play?" +
-                                query.toString(),
-                              headers: {
-                                Authorization: "Bearer " + access_token,
-                              },
-                              json: true,
-                            },
-                            (error, response, body) => {
-                              if (body.error) {
-                                console.log(body);
-                                return;
-                              }
-                              tracks.forEach((track, index) => {
-                                const query = new URLSearchParams({
-                                  uri: track.uri,
-                                  device_id: device_id,
-                                });
-                                request.post({
-                                  url:
-                                    "https://api.spotify.com/v1/me/player/queue?" +
-                                    query.toString(),
-                                  headers: {
-                                    Authorization: "Bearer " + access_token,
-                                  },
-                                  json: true,
-                                });
-                              });
-                            }
-                          );
-                          return;
-                        }
-                        tracks.forEach((track, index) => {
+                        tracks.forEach((track) => {
                           const query = new URLSearchParams({
                             uri: track.uri,
                             device_id: device_id,
@@ -257,63 +214,6 @@ export default function App() {
     );
   }
 
-  function createShuffledPlaylist(href) {
-    request.post(
-      {
-        url: "https://accounts.spotify.com/api/token",
-        form: {
-          refresh_token: refresh_token,
-          grant_type: "refresh_token",
-        },
-        headers: {
-          Authorization:
-            "Basic ZWQxMjMyODcxMTMzNDVjNDkzMzhkMWNmMjBiZWM5MGU6NjE2Mzg1ZjJlYzNkNGQ2M2E3OWJkMWIxZGZhM2M4MGM=",
-        },
-        json: true,
-      },
-      (error, response, body) => {
-        const access_token = body.access_token;
-
-        request.get(
-          "https://api.spotify.com/v1/me",
-          {
-            headers: { Authorization: "Bearer " + access_token },
-            json: true,
-          },
-          (error, response, body) => {
-            const user_id = body.id;
-            // error parsin json (n sei oq ta acotnecendo ) :D
-            // const query = new URLSearchParams({
-            //   name: "eu fiz isso",
-            //   description: "eu fiz isso tambem",
-            //   public: false,
-            // });
-
-            request.post(
-              "https://api.spotify.com/v1/users/" + user_id + "/playlists",
-              {
-                body: JSON.stringify({
-                  name: "eu fiz isso",
-                  description: "eu fiz isso tambem",
-                  public: false,
-                  collaborative: false,
-                }),
-                headers: {
-                  Authorization: "Bearer " + access_token,
-                  "Content-Type": "application/json",
-                },
-                json: true,
-              },
-              (error, response, body) => {
-                console.log(body);
-              }
-            );
-          }
-        );
-      }
-    );
-  }
-
   return (
     <View style={styles.container}>
       <Text
@@ -329,13 +229,17 @@ export default function App() {
       </Text>
       <View style={styles.grid}>
         {playlists.map((playlist) => (
-          <Icon key={playlist.id} playlist={playlist} onPress={addToQueue} />
+          <Icon
+            key={playlist.id}
+            playlist={playlist}
+            onPress={() => addToQueue(playlist.tracks)}
+          />
         ))}
       </View>
       <Button
         title="REFRESH"
         onPress={() => {
-          window.location.assign(window.location.origin);
+          refresh();
         }}
         color="#d6c05c"
       />
@@ -349,12 +253,12 @@ const styles = StyleSheet.create({
     height: "100%",
     alignItems: "center",
     backgroundColor: "#1a1c1f",
-    gap: 10,
   },
   grid: {
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
+    padding: 10,
   },
 });

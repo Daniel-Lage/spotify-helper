@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text } from "react-native";
 
-const background0 = "rgba(214, 192, 92, 0.1)";
+const background0 = "rgba(214, 192, 92, 0.05)";
 const background1 = "rgba(214, 192, 92, 0.4)";
 const accents = "rgba(214, 192, 92, 0.7)";
 
@@ -22,10 +22,12 @@ export default function Icon({ playlist, onPress }) {
         setPressed(true);
         clearTimeout(timeout);
       }}
-      onPress={() => {
+      onPressOut={() => {
         timeout = setTimeout(() => {
           setPressed(false);
         }, 150);
+      }}
+      onPress={() => {
         onPress(playlist.tracks);
       }}
     >
@@ -51,19 +53,18 @@ export default function Icon({ playlist, onPress }) {
 const styles = StyleSheet.create({
   button: {
     width: 120,
-    margin: 10,
-    borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: accents,
   },
   icon: {
     width: 100,
     height: 100,
     margin: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: accents,
-    backgroundColor: background1,
     borderRadius: 5,
   },
 });

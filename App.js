@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import request from "request";
 import Icon from "./src/icon";
 
 var refresh_token;
 var auth_code;
+
+const colors = {
+  primary: "hsl(216, 60%, 60%)",
+  secondary: "hsl(216, 35%, 35%)",
+  background: "hsl(216, 10%, 10%)",
+};
 
 export default function App() {
   const [playlists, setPlaylists] = useState([]);
@@ -28,7 +34,7 @@ export default function App() {
 
   if (!params.get("code")) {
     refresh();
-    return;
+    return <View style={styles.container} />;
   } else {
     auth_code = params.get("code");
   }
@@ -216,17 +222,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text
-        style={{
-          margin: 20,
-          fontSize: "300%",
-          fontWeight: "bold",
-          color: "#d6c05c",
-          textAlign: "center",
-        }}
-      >
-        Adiciona Playlist Embaralhada Para Fila
-      </Text>
+      <Text style={styles.title}>Adiciona Playlist Embaralhada Para Fila</Text>
       <View style={styles.grid}>
         {playlists.map((playlist) => (
           <Icon
@@ -236,13 +232,14 @@ export default function App() {
           />
         ))}
       </View>
-      <Button
-        title="REFRESH"
+      <Pressable
+        style={styles.button}
         onPress={() => {
           refresh();
         }}
-        color="#d6c05c"
-      />
+      >
+        <Text style={styles.text}>Recarregar</Text>
+      </Pressable>
     </View>
   );
 }
@@ -252,13 +249,32 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     alignItems: "center",
-    backgroundColor: "#1a1c1f",
+    backgroundColor: colors.background,
+    gap: 20,
   },
   grid: {
-    width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
     padding: 10,
+    backgroundColor: colors.secondary,
+    gap: 3,
+  },
+  title: {
+    fontSize: "300%",
+    fontWeight: "bold",
+    color: colors.primary,
+    textAlign: "center",
+    padding: 10,
+  },
+  button: {
+    padding: 10,
+    backgroundColor: colors.primary,
+    borderRadius: 5,
+  },
+  text: {
+    fontSize: "200%",
+    fontWeight: "bold",
+    color: colors.background,
   },
 });

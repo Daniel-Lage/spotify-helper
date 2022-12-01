@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text } from "react-native";
 
-const background0 = "rgba(214, 192, 92, 0.05)";
-const background1 = "rgba(214, 192, 92, 0.4)";
-const accents = "rgba(214, 192, 92, 0.7)";
+const colors = {
+  away: "hsl(216, 10%, 10%)",
+  focused: "hsl(216, 75%, 70%)",
+  primary: "hsl(216, 35%, 35%)",
+};
 
 export default function Icon({ playlist, onPress }) {
-  const [pressed, setPressed] = useState(false);
+  const [focused, setFocused] = useState(false);
   var timeout;
 
   return (
@@ -15,16 +17,16 @@ export default function Icon({ playlist, onPress }) {
       style={[
         styles.button,
         {
-          backgroundColor: pressed ? background1 : background0,
+          backgroundColor: focused ? colors.focused : colors.away,
         },
       ]}
       onPressIn={() => {
-        setPressed(true);
+        setFocused(true);
         clearTimeout(timeout);
       }}
       onPressOut={() => {
         timeout = setTimeout(() => {
-          setPressed(false);
+          setFocused(false);
         }, 150);
       }}
       onPress={() => {
@@ -32,20 +34,7 @@ export default function Icon({ playlist, onPress }) {
       }}
     >
       <Image source={playlist.image} style={styles.icon} />
-      <Text
-        style={{
-          height: "100%",
-          width: "100%",
-          textAlign: "center",
-          fontSize: 15,
-          color: accents,
-          fontWeight: "bold",
-          padding: 5,
-          paddingBottom: 15,
-        }}
-      >
-        {playlist.name}
-      </Text>
+      <Text style={styles.text}>{playlist.name}</Text>
     </Pressable>
   );
 }
@@ -56,15 +45,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: accents,
+    borderRadius: 5,
   },
   icon: {
     width: 100,
     height: 100,
     margin: 10,
-    borderWidth: 1,
-    borderColor: accents,
+    borderWidth: 2,
+    borderColor: colors.primary,
     borderRadius: 5,
+  },
+  text: {
+    height: "100%",
+    width: "100%",
+    textAlign: "center",
+    fontSize: 15,
+    color: colors.primary,
+    fontWeight: "bold",
+    padding: 5,
+    paddingBottom: 15,
   },
 });

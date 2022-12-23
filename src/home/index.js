@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import request from "request";
 import LoadingScreen from "../load";
 import Icon from "./components/icon";
@@ -176,17 +176,32 @@ export default function ({
         gap: 20,
       }}
     >
-      <Text
+      <View
         style={{
-          fontSize: "300%",
-          fontWeight: "bold",
-          color: colors.primary,
-          textAlign: "center",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
           padding: 10,
         }}
       >
-        Adiciona Playlist Embaralhada Para Fila
-      </Text>
+        <Image
+          source={require("../../assets/icon.png")}
+          style={{
+            width: 100,
+            height: 100,
+          }}
+        />
+        <Text
+          style={{
+            fontSize: "300%",
+            fontWeight: "bold",
+            color: colors.primary,
+            textAlign: "center",
+          }}
+        >
+          Adiciona Playlist Embaralhada Para Fila
+        </Text>
+      </View>
       <View
         style={{
           flexDirection: "row",

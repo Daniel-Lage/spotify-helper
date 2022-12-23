@@ -278,16 +278,31 @@ export default function ({
           gap: "1vw",
         }}
       >
-        <Pressable
-          onPress={() =>
-            navigation.navigate("Home", {
-              refreshToken: refreshToken,
-              colors: colors,
-            })
-          }
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 10,
+          }}
         >
-          <AntDesign name="leftcircle" size={48} color={colors.primary} />
-        </Pressable>
+          <Image
+            source={require("../../assets/icon.png")}
+            style={{
+              width: 100,
+              height: 100,
+            }}
+          />
+          <Pressable
+            onPress={() =>
+              navigation.navigate("Home", {
+                refreshToken: refreshToken,
+                colors: colors,
+              })
+            }
+          >
+            <AntDesign name="leftcircle" size={48} color={colors.primary} />
+          </Pressable>
+        </View>
         <Image
           source={playlist.image}
           style={{

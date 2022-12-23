@@ -65,10 +65,11 @@ export default function ({
         json: true,
       },
       (error, response, body) => {
+        const access_token = body.access_token;
         request.get(
           {
             url: "https://api.spotify.com/v1/me/player",
-            headers: { Authorization: "Bearer " + body.access_token },
+            headers: { Authorization: "Bearer " + access_token },
             json: true,
           },
           (error, response, body) => {
@@ -169,7 +170,7 @@ export default function ({
     <View
       style={{
         width: "100%",
-        height: "100%",
+        minHeight: "100%",
         alignItems: "center",
         backgroundColor: colors.background,
         gap: 20,
@@ -192,8 +193,7 @@ export default function ({
           flexWrap: "wrap",
           justifyContent: "center",
           padding: 10,
-          backgroundColor: colors.secondary,
-          gap: 3,
+          gap: 5,
         }}
       >
         {playlists.map((playlist) => (

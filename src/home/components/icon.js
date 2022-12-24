@@ -57,7 +57,7 @@ export default function ({ playlist, addToQueue, open, colors }) {
 
       <Button
         style={{ alignSelf: "flex-end", marginRight: 10, marginBottom: 10 }}
-        symbol="pluscircle"
+        symbol="play"
         onPress={() => {
           addToQueue();
         }}

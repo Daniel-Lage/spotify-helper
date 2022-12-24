@@ -3,6 +3,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import LoadingScreen from "../load";
 import request from "request";
+import Button from "../components/button";
 
 export default function ({
   navigation,
@@ -257,8 +258,6 @@ export default function ({
 
   if (!tracks) return <LoadingScreen colors={colors} />;
 
-  console.log(tracks);
-
   return (
     <View
       style={{
@@ -273,11 +272,25 @@ export default function ({
       <View
         style={{
           display: "grid",
+          width: "100%",
           gridTemplateColumns: "auto auto auto",
           alignItems: "center",
           gap: "1vw",
         }}
       >
+        <Button
+          onPress={() =>
+            navigation.navigate("Home", {
+              refreshToken: refreshToken,
+              colors: colors,
+            })
+          }
+          style={{ height: "100%" }}
+          symbol="leftcircle"
+          onColor={colors.secondary}
+          offColor={colors.primary}
+          size={50}
+        />
         <View
           style={{
             alignItems: "center",
@@ -286,35 +299,18 @@ export default function ({
           }}
         >
           <Image
-            source={require("../../assets/icon.png")}
+            source={playlist.image}
             style={{
-              width: 100,
-              height: 100,
+              width: "20vw",
+              height: "20vw",
+              borderRadius: 5,
             }}
           />
-          <Pressable
-            onPress={() =>
-              navigation.navigate("Home", {
-                refreshToken: refreshToken,
-                colors: colors,
-              })
-            }
-          >
-            <AntDesign name="leftcircle" size={48} color={colors.primary} />
-          </Pressable>
         </View>
-        <Image
-          source={playlist.image}
-          style={{
-            width: 200,
-            height: 200,
-            borderRadius: 5,
-          }}
-        />
         <View style={{ alignItems: "center" }}>
           <Text
             style={{
-              fontSize: "300%",
+              fontSize: "150%",
               fontWeight: "bold",
               color: colors.primary,
               textAlign: "center",
@@ -323,9 +319,14 @@ export default function ({
           >
             {playlist.name}
           </Text>
-          <Pressable onPress={() => addToQueue()}>
-            <AntDesign name="play" size={48} color={colors.primary} />
-          </Pressable>
+          <Button
+            onPress={() => addToQueue()}
+            style={{ height: "100%" }}
+            symbol="play"
+            onColor={colors.secondary}
+            offColor={colors.primary}
+            size={50}
+          />
         </View>
       </View>
       {tracks.map(({ track: { name, artists } }, index) => {
@@ -374,17 +375,14 @@ export default function ({
                 gap: "1vw",
               }}
             >
-              <Pressable>
-                <AntDesign
-                  name="pluscircle"
-                  size={24}
-                  color={colors.secondary}
-                />
-              </Pressable>
-
-              <Pressable onPress={() => addToQueueStartingFromSong(index)}>
-                <AntDesign name="play" size={24} color={colors.secondary} />
-              </Pressable>
+              <Button
+                onPress={() => addToQueueStartingFromSong(index)}
+                style={{ height: "100%" }}
+                symbol="play"
+                onColor={colors.opening}
+                offColor={colors.secondary}
+                size={25}
+              />
             </View>
           </View>
         );

@@ -15,6 +15,7 @@ const colors = {
   secondary: "hsl(216, 35%, 35%)",
   background: "hsl(216, 10%, 10%)",
   default: "hsl(216, 75%, 70%)",
+  adding: "hsl(216, 25%, 25%)",
   opening: "hsl(216, 20%, 20%)",
 };
 
@@ -41,10 +42,10 @@ export default function () {
   useEffect(() => {
     if (!params.get("code")) {
       refresh();
-      return <View style={styles.container} />;
-    } else {
-      auth_code = params.get("code");
+      return;
     }
+
+    auth_code = params.get("code");
 
     if (!refreshToken) {
       // get refresh token
@@ -85,13 +86,13 @@ export default function () {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ title: "Home Screen" }}
+          options={{ title: "Spotify Helper - Home Screen" }}
           initialParams={{ refreshToken: refreshToken, colors: colors }}
         />
         <Stack.Screen
           name="Playlist"
           component={Playlist}
-          options={{ title: "Playlist" }}
+          options={{ title: "Spotify Helper - Playlist" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

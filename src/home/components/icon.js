@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Image, Pressable, Text } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import Button from "../../components/button";
 
 export default function ({ playlist, addToQueue, open, colors }) {
   const [adding, setAdding] = useState(false);
   const [opening, setOpening] = useState(false);
   var addTimeout;
-  var openTimeout;
 
   return (
     <Pressable
@@ -17,7 +16,7 @@ export default function ({ playlist, addToQueue, open, colors }) {
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 5,
-        backgroundColor: adding ? colors.background : colors.default,
+        backgroundColor: adding ? colors.adding : colors.primary,
       }}
       onPressIn={() => {
         setAdding(true);
@@ -56,27 +55,16 @@ export default function ({ playlist, addToQueue, open, colors }) {
         {playlist.name}
       </Text>
 
-      <Pressable
+      <Button
         style={{ alignSelf: "flex-end", marginRight: 10, marginBottom: 10 }}
-        onPressIn={() => {
-          setOpening(true);
-          clearTimeout(openTimeout);
-        }}
-        onPressOut={() => {
-          openTimeout = setTimeout(() => {
-            setOpening(false);
-          }, 150);
-        }}
+        symbol="pluscircle"
         onPress={() => {
           addToQueue();
         }}
-      >
-        <AntDesign
-          name="pluscircle"
-          size={24}
-          color={opening ? colors.opening : colors.secondary}
-        />
-      </Pressable>
+        onColor={colors.opening}
+        offColor={colors.secondary}
+        size={30}
+      />
     </Pressable>
   );
 }

@@ -199,7 +199,7 @@ export default function ({
             textAlign: "center",
           }}
         >
-          Adiciona Playlist Embaralhada Para Fila
+          Spotify Helper
         </Text>
       </View>
       <View

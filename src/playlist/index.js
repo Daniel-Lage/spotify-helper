@@ -11,18 +11,15 @@ import Load from "../load";
 export default function Playlist({
   navigation,
   route: {
-    params: { playlist, headerHeight },
+    params: { playlist },
   },
 }) {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const header = useRef();
 
-  function appendTracks(body, accessToken) {
-    setTracks((prev) => {
-      return [...prev, ...body.items];
-    });
-
+  function appendTracks(body, accessToken, tempList) {
+    tempList = [...tempList, ...body.items];
     if (body.next) {
       request.get(
         {
@@ -31,24 +28,27 @@ export default function Playlist({
           json: true,
         },
         (error, response, body) => {
-          appendTracks(body, accessToken);
+          appendTracks(body, accessToken, tempList);
         }
       );
     } else {
       setLoading(false);
+      setTracks(tempList);
     }
   }
 
   useEffect(() => {
+    navigation.setOptions({ title: "Spotify Helper - " + playlist.name });
     useToken((accessToken) => {
       request.get(
         {
-          url: playlist.tracks,
+          url: playlist.tracks.href,
           headers: { Authorization: "Bearer " + accessToken },
           json: true,
         },
         (error, response, body) => {
-          appendTracks(body, accessToken);
+          console.log("request: get initial tracks (1:100)", body);
+          appendTracks(body, accessToken, []);
         }
       );
     });
@@ -301,7 +301,7 @@ export default function Playlist({
               }}
             >
               <Image
-                source={playlist.image}
+                source={playlist.images.length ? playlist.images[0].url : null}
                 style={{
                   width: 120,
                   height: 120,

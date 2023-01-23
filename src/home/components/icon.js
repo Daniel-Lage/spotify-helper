@@ -3,7 +3,7 @@ import { Image, Pressable, Text } from "react-native";
 import Button from "../../components/button";
 import colors from "../../components/colors";
 
-export default function Icon({ playlist, addToQueue, onPress }) {
+export default function Icon({ image, name, addToQueue, onPress }) {
   const [active, setActive] = useState(false);
   var activeTimeout;
 
@@ -29,7 +29,7 @@ export default function Icon({ playlist, addToQueue, onPress }) {
       onPress={onPress}
     >
       <Image
-        source={playlist.image}
+        source={image}
         style={{
           width: 100,
           height: 100,
@@ -49,7 +49,7 @@ export default function Icon({ playlist, addToQueue, onPress }) {
           pactiveBottom: 15,
         }}
       >
-        {playlist.name}
+        {name}
       </Text>
 
       <Button

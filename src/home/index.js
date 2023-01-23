@@ -11,16 +11,8 @@ export default function Home({ navigation }) {
   const [loading, setLoading] = useState(true);
   const header = useRef();
 
-  function appendPlaylists(body, accessToken) {
-    setPlaylists((prev) => [
-      ...prev,
-      ...body.items.map((playlist) => ({
-        id: playlist.id,
-        name: playlist.name,
-        tracks: playlist.tracks.href,
-        image: playlist.images.length === 0 ? null : playlist.images[0].url,
-      })),
-    ]);
+  function appendPlaylists(body, accessToken, tempList) {
+    tempList = [...tempList, ...body.items];
 
     if (body.next) {
       request.get(
@@ -30,15 +22,17 @@ export default function Home({ navigation }) {
           json: true,
         },
         (error, response, body) => {
-          appendPlaylists(body, accessToken);
+          appendPlaylists(body, accessToken, tempList);
         }
       );
     } else {
       setLoading(false);
+      setPlaylists(tempList);
     }
   }
 
   useEffect(() => {
+    document.title = "Spotify Helper - Home";
     useToken((accessToken) => {
       request.get(
         {
@@ -47,11 +41,92 @@ export default function Home({ navigation }) {
           json: true,
         },
         (error, response, body) => {
-          appendPlaylists(body, accessToken);
+          appendPlaylists(body, accessToken, []);
         }
       );
     });
   }, []);
+
+  function appendTracks(body, accessToken, tracks, deviceID) {
+    tracks = [...tracks, ...body.items];
+
+    if (body.next) {
+      request.get(
+        {
+          url: body.next,
+          headers: { Authorization: "Bearer " + accessToken },
+          json: true,
+        },
+        (error, response, body) => {
+          appendTracks(body, accessToken, tracks, deviceID);
+        }
+      );
+    } else {
+      function getShuffledArray(array) {
+        const newArray = [];
+        while (array.length) {
+          const index = Math.floor(Math.random() * array.length);
+          newArray.push(array.splice(index, 1)[0]);
+        }
+        return newArray;
+      }
+
+      tracks = getShuffledArray(tracks);
+
+      const query = new URLSearchParams({
+        uri: tracks.pop().track.uri,
+        device_id: deviceID,
+      });
+
+      request.post(
+        {
+          url: "https://api.spotify.com/v1/me/player/queue?" + query.toString(),
+          headers: { Authorization: "Bearer " + accessToken },
+          json: true,
+        },
+        (error, response, body) => {
+          if (body) {
+            console.log("request: add first track to queue", body);
+            return;
+          }
+          const query = new URLSearchParams({
+            device_id: deviceID,
+          });
+          request.post(
+            {
+              url:
+                "https://api.spotify.com/v1/me/player/next?" + query.toString(),
+              headers: {
+                Authorization: "Bearer " + accessToken,
+              },
+              json: true,
+            },
+            (error, response, body) => {
+              if (body) {
+                console.log("request: skip track", body);
+                return;
+              }
+              tracks.forEach((track) => {
+                const query = new URLSearchParams({
+                  uri: track.track.uri,
+                  device_id: deviceID,
+                });
+                request.post({
+                  url:
+                    "https://api.spotify.com/v1/me/player/queue?" +
+                    query.toString(),
+                  headers: {
+                    Authorization: "Bearer " + accessToken,
+                  },
+                  json: true,
+                });
+              });
+            }
+          );
+        }
+      );
+    }
+  }
 
   function addToQueue(href) {
     useToken((accessToken) => {
@@ -68,7 +143,7 @@ export default function Home({ navigation }) {
             );
             return;
           }
-          const device_id = body.device.id;
+          const deviceID = body.device.id;
 
           request.get(
             {
@@ -77,74 +152,8 @@ export default function Home({ navigation }) {
               json: true,
             },
             (error, response, body) => {
-              function get_shuffled_array(array) {
-                const newArray = [];
-                while (array.length) {
-                  const index = Math.floor(Math.random() * array.length);
-                  newArray.push(array.splice(index, 1)[0]);
-                }
-                return newArray;
-              }
-
-              const tracks = get_shuffled_array(
-                body.items.map((value) => value.track)
-              );
-
-              const query = new URLSearchParams({
-                uri: tracks.pop().uri,
-                device_id: device_id,
-              });
-
-              request.post(
-                {
-                  url:
-                    "https://api.spotify.com/v1/me/player/queue?" +
-                    query.toString(),
-                  headers: { Authorization: "Bearer " + accessToken },
-                  json: true,
-                },
-                (error, response, body) => {
-                  if (body) {
-                    console.log("request: add first track to queue", body);
-                    return;
-                  }
-                  const query = new URLSearchParams({
-                    device_id: device_id,
-                  });
-                  request.post(
-                    {
-                      url:
-                        "https://api.spotify.com/v1/me/player/next?" +
-                        query.toString(),
-                      headers: {
-                        Authorization: "Bearer " + accessToken,
-                      },
-                      json: true,
-                    },
-                    (error, response, body) => {
-                      if (body) {
-                        console.log("request: skip track", body);
-                        return;
-                      }
-                      tracks.forEach((track) => {
-                        const query = new URLSearchParams({
-                          uri: track.uri,
-                          device_id: device_id,
-                        });
-                        request.post({
-                          url:
-                            "https://api.spotify.com/v1/me/player/queue?" +
-                            query.toString(),
-                          headers: {
-                            Authorization: "Bearer " + accessToken,
-                          },
-                          json: true,
-                        });
-                      });
-                    }
-                  );
-                }
-              );
+              console.log(body);
+              appendTracks(body, accessToken, [], deviceID);
             }
           );
         }
@@ -204,8 +213,9 @@ export default function Home({ navigation }) {
           {playlists.map((playlist) => (
             <Icon
               key={playlist.id}
-              playlist={playlist}
-              addToQueue={() => addToQueue(playlist.tracks)}
+              name={playlist.name}
+              image={playlist.images.length ? playlist.images[0].url : null}
+              addToQueue={() => addToQueue(playlist.tracks.href)}
               onPress={() =>
                 navigation.navigate("Playlist", {
                   playlist: playlist,

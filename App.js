@@ -74,8 +74,16 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Playlist" component={Playlist} />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ title: "Spotify Helper - Home" }}
+        />
+        <Stack.Screen
+          name="Playlist"
+          component={Playlist}
+          options={{ title: "Spotify Helper - Playlist" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -15,7 +15,7 @@ export function useToken(Function) {
       json: true,
     },
     (error, response, body) => {
-      console.log(body);
+      console.log("request: get access token", body);
       Function(body.access_token);
     }
   );

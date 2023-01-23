@@ -1,45 +1,52 @@
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { Image, Text, View } from "react-native";
+import { useToken } from "../components/functions";
 import LoadingScreen from "../load";
 import request from "request";
 import Button from "../components/button";
+import Track from "./components/track";
+import colors from "../components/colors";
 
-export default function ({
+export default function Playlist({
   navigation,
   route: {
-    params: { colors, refreshToken, playlist },
+    params: { refreshToken, playlist },
   },
 }) {
-  const [tracks, setTracks] = useState();
+  const [tracks, setTracks] = useState([]);
+
+  function appendTracks(body, accessToken) {
+    setTracks((prev) => {
+      return [...prev, ...body.items];
+    });
+
+    if (body.next) {
+      request.get(
+        {
+          url: body.next,
+          headers: { Authorization: "Bearer " + accessToken },
+          json: true,
+        },
+        (error, response, body) => {
+          appendTracks(body, accessToken);
+        }
+      );
+    }
+  }
 
   useEffect(() => {
-    request.post(
-      {
-        url: "https://accounts.spotify.com/api/token",
-        form: {
-          refresh_token: refreshToken,
-          grant_type: "refresh_token",
+    useToken((accessToken) => {
+      request.get(
+        {
+          url: playlist.tracks,
+          headers: { Authorization: "Bearer " + accessToken },
+          json: true,
         },
-        headers: {
-          Authorization:
-            "Basic ZWQxMjMyODcxMTMzNDVjNDkzMzhkMWNmMjBiZWM5MGU6NjE2Mzg1ZjJlYzNkNGQ2M2E3OWJkMWIxZGZhM2M4MGM=",
-        },
-        json: true,
-      },
-      (error, response, body) => {
-        request.get(
-          {
-            url: playlist.tracks,
-            headers: { Authorization: "Bearer " + body.access_token },
-            json: true,
-          },
-          (error, response, body) => {
-            setTracks(body.items);
-          }
-        );
-      }
-    );
+        (error, response, body) => {
+          appendTracks(body, accessToken);
+        }
+      );
+    });
   }, []);
 
   function addToQueue() {
@@ -256,7 +263,7 @@ export default function ({
     );
   }
 
-  if (!tracks) return <LoadingScreen colors={colors} />;
+  if (!tracks) return <LoadingScreen />;
 
   return (
     <View
@@ -279,16 +286,9 @@ export default function ({
         }}
       >
         <Button
-          onPress={() =>
-            navigation.navigate("Home", {
-              refreshToken: refreshToken,
-              colors: colors,
-            })
-          }
+          onPress={() => navigation.navigate("Home")}
           style={{ height: "100%" }}
           symbol="leftcircle"
-          onColor={colors.secondary}
-          offColor={colors.primary}
           size={50}
         />
         <View
@@ -323,70 +323,18 @@ export default function ({
             onPress={() => addToQueue()}
             style={{ height: "100%" }}
             symbol="play"
-            onColor={colors.secondary}
-            offColor={colors.primary}
             size={50}
           />
         </View>
       </View>
-      {tracks.map(({ track: { name, artists } }, index) => {
-        return (
-          <View
-            key={index}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "auto auto",
-              width: "80vw",
-              padding: 10,
-              borderRadius: 5,
-              backgroundColor: colors.default,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                gap: "1vw",
-                flexWrap: "wrap",
-              }}
-            >
-              <Text
-                style={{
-                  color: colors.background,
-                  fontWeight: "bold",
-                }}
-              >
-                {name}
-              </Text>
-              <Text
-                key={index}
-                style={{
-                  color: colors.secondary,
-                  fontWeight: "500",
-                }}
-              >
-                {artists.map(({ name }, index) => name).join(", ")}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                gap: "1vw",
-              }}
-            >
-              <Button
-                onPress={() => addToQueueStartingFromSong(index)}
-                style={{ height: "100%" }}
-                symbol="play"
-                onColor={colors.opening}
-                offColor={colors.secondary}
-                size={25}
-              />
-            </View>
-          </View>
-        );
-      })}
+      {tracks.map(({ track }, index) => (
+        <Track
+          track={track}
+          key={index}
+          index={index}
+          onPress={() => addToQueueStartingFromSong(index)}
+        />
+      ))}
     </View>
   );
 }

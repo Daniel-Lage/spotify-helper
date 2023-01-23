@@ -1,6 +1,7 @@
 import { ActivityIndicator, View } from "react-native";
+import colors from "../components/colors";
 
-export default function ({ colors }) {
+export default function Load() {
   return (
     <View
       style={{

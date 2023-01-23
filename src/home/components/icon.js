@@ -1,30 +1,29 @@
 import { useState } from "react";
 import { Image, Pressable, Text } from "react-native";
 import Button from "../../components/button";
+import colors from "../../components/colors";
 
-export default function ({ playlist, addToQueue, open, colors }) {
-  const [adding, setAdding] = useState(false);
-  const [opening, setOpening] = useState(false);
+export default function Icon({ playlist, addToQueue, open }) {
+  const [active, setActive] = useState(false);
   var addTimeout;
 
   return (
     <Pressable
-      key={playlist.name}
       style={{
         width: 120,
         alignItems: "center",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 5,
-        backgroundColor: adding ? colors.adding : colors.primary,
+        backgroundColor: active ? colors.active : colors.primary,
       }}
       onPressIn={() => {
-        setAdding(true);
+        setActive(true);
         clearTimeout(addTimeout);
       }}
       onPressOut={() => {
         addTimeout = setTimeout(() => {
-          setAdding(false);
+          setActive(false);
         }, 150);
       }}
       onPress={() => {
@@ -48,8 +47,8 @@ export default function ({ playlist, addToQueue, open, colors }) {
           fontSize: 15,
           color: colors.secondary,
           fontWeight: "bold",
-          padding: 5,
-          paddingBottom: 15,
+          pactive: 5,
+          pactiveBottom: 15,
         }}
       >
         {playlist.name}
@@ -61,8 +60,8 @@ export default function ({ playlist, addToQueue, open, colors }) {
         onPress={() => {
           addToQueue();
         }}
-        onColor={colors.opening}
-        offColor={colors.secondary}
+        activeColor={colors.opening}
+        inactiveColor={colors.secondary}
         size={30}
       />
     </Pressable>

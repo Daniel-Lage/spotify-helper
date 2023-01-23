@@ -8,20 +8,8 @@ import request from "request";
 
 const Stack = createNativeStackNavigator();
 
-var auth_code;
-
-const colors = {
-  primary: "hsl(216, 60%, 60%)",
-  secondary: "hsl(216, 35%, 35%)",
-  background: "hsl(216, 10%, 10%)",
-  default: "hsl(216, 75%, 70%)",
-  adding: "hsl(216, 25%, 25%)",
-  opening: "hsl(216, 20%, 20%)",
-};
-
-export default function () {
+export default function App() {
   const params = new URLSearchParams(window.location.search);
-  const [refreshToken, setRefreshToken] = useState();
 
   function refresh() {
     const params = new URLSearchParams({
@@ -37,6 +25,7 @@ export default function () {
     window.location.assign(
       "https://accounts.spotify.com/authorize?" + params.toString()
     );
+    return;
   }
 
   useEffect(() => {
@@ -45,15 +34,13 @@ export default function () {
       return;
     }
 
-    auth_code = params.get("code");
-
-    if (!refreshToken) {
+    if (!sessionStorage.getItem("refresh_token")) {
       // get refresh token
       request.post(
         {
           url: "https://accounts.spotify.com/api/token",
           form: {
-            code: auth_code,
+            code: params.get("code"),
             redirect_uri: window.location.origin,
             grant_type: "authorization_code",
           },
@@ -68,14 +55,11 @@ export default function () {
             refresh();
             return;
           }
-          setRefreshToken(body.refresh_token);
+          sessionStorage.setItem("refresh_token", body.refresh_token);
         }
       );
-      return;
     }
   }, []);
-
-  if (!refreshToken) return <LoadingScreen colors={colors} />;
 
   return (
     <NavigationContainer>
@@ -87,7 +71,6 @@ export default function () {
           name="Home"
           component={Home}
           options={{ title: "Spotify Helper - Home Screen" }}
-          initialParams={{ refreshToken: refreshToken, colors: colors }}
         />
         <Stack.Screen
           name="Playlist"

@@ -1,0 +1,14 @@
+{
+    // run this before
+    //$env:NODE_OPTIONS = "--openssl-legacy-provider"
+
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "F5 Anything: Custom Command",
+            "type": "f5anything",
+            "request": "launch",
+            "command": "npm run web"
+        }
+    ]
+}

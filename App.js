@@ -3,13 +3,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import Home from "./src/home";
 import Playlist from "./src/playlist";
 import { useEffect, useState } from "react";
-import LoadingScreen from "./src/load";
 import request from "request";
+import { refresh } from "./src/components/functions";
+import Load from "./src/load";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const params = new URLSearchParams(window.location.search);
+  const [refreshToken, setRefreshToken] = useState();
 
   function refresh() {
     const params = new URLSearchParams({
@@ -35,7 +37,6 @@ export default function App() {
     }
 
     if (!sessionStorage.getItem("refresh_token")) {
-      // get refresh token
       request.post(
         {
           url: "https://accounts.spotify.com/api/token",
@@ -51,15 +52,20 @@ export default function App() {
           json: true,
         },
         (error, response, body) => {
+          console.log(body);
           if (body.error) {
             refresh();
             return;
           }
           sessionStorage.setItem("refresh_token", body.refresh_token);
+          setRefreshToken(body.refresh_token);
         }
       );
     }
   }, []);
+
+  if (!refreshToken && !sessionStorage.getItem("refresh_token"))
+    return <Load />;
 
   return (
     <NavigationContainer>

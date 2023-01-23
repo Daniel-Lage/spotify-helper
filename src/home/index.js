@@ -200,6 +200,7 @@ export default function Home({ navigation }) {
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
+            marginHorizontal: 64,
           }}
         >
           Spotify Helper

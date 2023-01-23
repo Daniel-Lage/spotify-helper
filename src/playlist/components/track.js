@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import Button from "../../components/button";
 import colors from "../../components/colors";
@@ -11,18 +12,30 @@ export default function Track({
   index,
   onPress,
 }) {
+  const [active, setActive] = useState(false);
+  var activeTimeout;
+
   const image = images[2];
   return (
     <Pressable
-      onPress={onPress}
       style={{
         flexDirection: "row",
         gap: 10,
         width: "80vw",
         padding: 10,
         borderRadius: 5,
-        backgroundColor: colors.default,
+        backgroundColor: active ? colors.active : colors.inactive,
       }}
+      onPressIn={() => {
+        setActive(true);
+        clearTimeout(activeTimeout);
+      }}
+      onPressOut={() => {
+        activeTimeout = setTimeout(() => {
+          setActive(false);
+        }, 150);
+      }}
+      onPress={onPress}
     >
       <Image
         source={image.url}

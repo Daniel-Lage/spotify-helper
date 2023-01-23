@@ -200,7 +200,7 @@ export default function Home({ navigation }) {
             key={playlist.id}
             playlist={playlist}
             addToQueue={() => addToQueue(playlist.tracks)}
-            open={() =>
+            onPress={() =>
               navigation.navigate("Playlist", {
                 playlist: playlist,
               })

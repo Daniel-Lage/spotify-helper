@@ -3,9 +3,9 @@ import { Image, Pressable, Text } from "react-native";
 import Button from "../../components/button";
 import colors from "../../components/colors";
 
-export default function Icon({ playlist, addToQueue, open }) {
+export default function Icon({ playlist, addToQueue, onPress }) {
   const [active, setActive] = useState(false);
-  var addTimeout;
+  var activeTimeout;
 
   return (
     <Pressable
@@ -15,20 +15,18 @@ export default function Icon({ playlist, addToQueue, open }) {
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 5,
-        backgroundColor: active ? colors.active : colors.primary,
+        backgroundColor: active ? colors.active : colors.inactive,
       }}
       onPressIn={() => {
         setActive(true);
-        clearTimeout(addTimeout);
+        clearTimeout(activeTimeout);
       }}
       onPressOut={() => {
-        addTimeout = setTimeout(() => {
+        activeTimeout = setTimeout(() => {
           setActive(false);
         }, 150);
       }}
-      onPress={() => {
-        open();
-      }}
+      onPress={onPress}
     >
       <Image
         source={playlist.image}

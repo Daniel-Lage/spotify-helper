@@ -280,6 +280,15 @@ export default function Playlist({
         >
           {playlist.name}
         </Text>
+        <Image
+          source={require("../../assets/icon.png")}
+          style={{
+            position: "absolute",
+            alignSelf: "flex-end",
+            width: 72,
+            height: 72,
+          }}
+        />
       </View>
       {loading ? (
         <Load />

@@ -173,7 +173,6 @@ export default function Home({ navigation }) {
     >
       <View
         style={{
-          flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: colors.primary,
@@ -186,6 +185,15 @@ export default function Home({ navigation }) {
         }}
         ref={header}
       >
+        <Image
+          source={require("../../assets/icon.png")}
+          style={{
+            position: "absolute",
+            alignSelf: "flex-end",
+            width: 72,
+            height: 72,
+          }}
+        />
         <Text
           style={{
             fontSize: "300%",

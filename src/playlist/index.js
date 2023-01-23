@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { useToken } from "../components/functions";
 import LoadingScreen from "../load";
@@ -6,14 +6,17 @@ import request from "request";
 import Button from "../components/button";
 import Track from "./components/track";
 import colors from "../components/colors";
+import Load from "../load";
 
 export default function Playlist({
   navigation,
   route: {
-    params: { refreshToken, playlist },
+    params: { playlist, headerHeight },
   },
 }) {
   const [tracks, setTracks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const header = useRef();
 
   function appendTracks(body, accessToken) {
     setTracks((prev) => {
@@ -31,6 +34,8 @@ export default function Playlist({
           appendTracks(body, accessToken);
         }
       );
+    } else {
+      setLoading(false);
     }
   }
 
@@ -233,8 +238,6 @@ export default function Playlist({
     });
   }
 
-  if (!tracks) return <LoadingScreen />;
-
   return (
     <View
       style={{
@@ -242,69 +245,94 @@ export default function Playlist({
         minHeight: "100%",
         alignItems: "center",
         backgroundColor: colors.background,
-        padding: "3vh",
-        gap: 20,
+        gap: 10,
       }}
     >
       <View
         style={{
-          display: "grid",
-          width: "100%",
-          gridTemplateColumns: "auto auto auto",
           alignItems: "center",
-          gap: "1vw",
+          justifyContent: "center",
+          backgroundColor: colors.primary,
+          width: "100%",
+          position: "fixed",
+          padding: 10,
+          zIndex: 101010,
+          borderBottomWidth: 10,
+          borderColor: colors.background,
         }}
+        ref={header}
       >
         <Button
-          onPress={() => navigation.navigate("Home")}
-          style={{ height: "100%" }}
           symbol="leftcircle"
-          size={50}
+          onPress={() => navigation.goBack()}
+          size={64}
+          style={{ position: "absolute", alignSelf: "flex-start" }}
         />
-        <View
+
+        <Text
           style={{
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 10,
+            marginHorizontal: 64,
+            fontSize: "300%",
+            fontWeight: "bold",
+            color: colors.secondary,
+            textAlign: "center",
           }}
         >
-          <Image
-            source={playlist.image}
+          {playlist.name}
+        </Text>
+      </View>
+      {loading ? (
+        <Load />
+      ) : (
+        <>
+          <View
             style={{
-              width: "20vw",
-              height: "20vw",
-              borderRadius: 5,
-            }}
-          />
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <Text
-            style={{
-              fontSize: "150%",
-              fontWeight: "bold",
-              color: colors.primary,
-              textAlign: "center",
-              padding: 10,
+              display: "grid",
+              width: "100%",
+              gridTemplateColumns: "auto auto",
+              marginTop: header.current.clientHeight + 20,
+              alignItems: "center",
             }}
           >
-            {playlist.name}
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                source={playlist.image}
+                style={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: 5,
+                }}
+              />
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Button
+                onPress={() => addToQueue()}
+                style={{ height: "100%" }}
+                symbol="play"
+                size={120}
+              />
+            </View>
+          </View>
+          <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+            {tracks.length} songs
           </Text>
-          <Button
-            onPress={() => addToQueue()}
-            style={{ height: "100%" }}
-            symbol="play"
-            size={50}
-          />
-        </View>
-      </View>
-      {tracks.map(({ track }, index) => (
-        <Track
-          track={track}
-          key={index}
-          index={index}
-          onPress={() => addToQueueStartingFromSong(index)}
-        />
-      ))}
+          <View style={{ gap: 10, marginBottom: 10 }}>
+            {tracks.map(({ track }, index) => (
+              <Track
+                track={track}
+                key={index}
+                index={index}
+                onPress={() => addToQueueStartingFromSong(index)}
+              />
+            ))}
+          </View>
+        </>
+      )}
     </View>
   );
 }

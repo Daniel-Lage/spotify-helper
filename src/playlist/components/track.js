@@ -22,7 +22,7 @@ export default function Track({
         flexDirection: "row",
         gap: 10,
         width: "80vw",
-        padding: 10,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: active ? colors.active : colors.inactive,
       }}
@@ -37,14 +37,16 @@ export default function Track({
       }}
       onPress={onPress}
     >
-      <Image
-        source={image.url}
-        style={{
-          width: 32,
-          height: 32,
-          borderRadius: 5,
-        }}
-      />
+      {image && (
+        <Image
+          source={image.url}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 5,
+          }}
+        />
+      )}
       <Text
         style={{
           color: colors.background,

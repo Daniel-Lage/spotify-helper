@@ -4,7 +4,6 @@ import Home from "./src/home";
 import Playlist from "./src/playlist";
 import { useEffect, useState } from "react";
 import request from "request";
-import { refresh } from "./src/components/functions";
 import Load from "./src/load";
 
 const Stack = createNativeStackNavigator();
@@ -71,18 +70,12 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Home"
-        screenOptions={{ headerShown: false }}
+        screenOptions={{
+          headerShown: false,
+        }}
       >
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ title: "Spotify Helper - Home Screen" }}
-        />
-        <Stack.Screen
-          name="Playlist"
-          component={Playlist}
-          options={{ title: "Spotify Helper - Playlist" }}
-        />
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Playlist" component={Playlist} />
       </Stack.Navigator>
     </NavigationContainer>
   );

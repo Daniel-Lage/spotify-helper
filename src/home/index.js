@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { useToken } from "../components/functions";
 import request from "request";
-import LoadingScreen from "../load";
 import Icon from "./components/icon";
 import colors from "../components/colors";
+import Load from "../load";
 
 export default function Home({ navigation }) {
   const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const header = useRef();
 
   function appendPlaylists(body, accessToken) {
     setPlaylists((prev) => [
@@ -31,6 +33,8 @@ export default function Home({ navigation }) {
           appendPlaylists(body, accessToken);
         }
       );
+    } else {
+      setLoading(false);
     }
   }
 
@@ -148,8 +152,6 @@ export default function Home({ navigation }) {
     });
   }
 
-  if (!playlists) return <LoadingScreen />;
-
   return (
     <View
       style={{
@@ -165,49 +167,55 @@ export default function Home({ navigation }) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor: colors.primary,
+          width: "100%",
+          position: "fixed",
           padding: 10,
+          zIndex: 101010,
+          borderBottomWidth: 10,
+          borderColor: colors.background,
         }}
+        ref={header}
       >
-        <Image
-          source={require("../../assets/icon.png")}
-          style={{
-            width: 100,
-            height: 100,
-          }}
-        />
         <Text
           style={{
             fontSize: "300%",
             fontWeight: "bold",
-            color: colors.primary,
+            color: colors.secondary,
             textAlign: "center",
           }}
         >
           Spotify Helper
         </Text>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          padding: 10,
-          gap: 5,
-        }}
-      >
-        {playlists.map((playlist) => (
-          <Icon
-            key={playlist.id}
-            playlist={playlist}
-            addToQueue={() => addToQueue(playlist.tracks)}
-            onPress={() =>
-              navigation.navigate("Playlist", {
-                playlist: playlist,
-              })
-            }
-          />
-        ))}
-      </View>
+      {loading ? (
+        <Load />
+      ) : (
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            padding: 10,
+            marginTop: header.current?.clientHeight,
+            gap: 5,
+          }}
+        >
+          {playlists.map((playlist) => (
+            <Icon
+              key={playlist.id}
+              playlist={playlist}
+              addToQueue={() => addToQueue(playlist.tracks)}
+              onPress={() =>
+                navigation.navigate("Playlist", {
+                  playlist: playlist,
+                  headerHeight: header.current?.clientHeight,
+                })
+              }
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }

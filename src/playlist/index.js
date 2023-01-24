@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
-import { useToken } from "../components/functions";
-import LoadingScreen from "../load";
+import { useToken } from "../../src/functions";
 import request from "request";
 import Button from "../components/button";
 import Track from "./components/track";
-import colors from "../components/colors";
+import Colors from "../colors";
 import Load from "../load";
 
 export default function Playlist({
@@ -14,8 +13,10 @@ export default function Playlist({
     params: { playlist },
   },
 }) {
+  const theme = localStorage.getItem("theme");
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const colors = Colors(theme);
   const header = useRef();
 
   function appendTracks(body, accessToken, tempList) {
@@ -267,6 +268,7 @@ export default function Playlist({
           onPress={() => navigation.goBack()}
           size={64}
           style={{ position: "absolute", alignSelf: "flex-start" }}
+          theme={theme}
         />
 
         <Text
@@ -291,7 +293,7 @@ export default function Playlist({
         />
       </View>
       {loading ? (
-        <Load />
+        <Load theme={theme} />
       ) : (
         <>
           <View
@@ -324,6 +326,7 @@ export default function Playlist({
                 style={{ height: "100%" }}
                 symbol="play"
                 size={120}
+                theme={theme}
               />
             </View>
           </View>
@@ -337,6 +340,7 @@ export default function Playlist({
                 key={index}
                 index={index}
                 onPress={() => addToQueueStartingFromSong(index)}
+                theme={theme}
               />
             ))}
           </View>

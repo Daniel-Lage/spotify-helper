@@ -1,7 +1,9 @@
 import { ActivityIndicator, View } from "react-native";
-import colors from "../components/colors";
+import Colors from "../colors";
 
-export default function Load() {
+export default function Load({ theme }) {
+  const colors = Colors(theme);
+  console.log(theme);
   return (
     <View
       style={{

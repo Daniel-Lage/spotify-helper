@@ -64,7 +64,7 @@ export default function App() {
   }, []);
 
   if (!refreshToken && !sessionStorage.getItem("refresh_token"))
-    return <Load />;
+    return <Load theme={localStorage.getItem("theme")} />;
 
   return (
     <NavigationContainer>

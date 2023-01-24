@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Image, Pressable, Text } from "react-native";
 import Button from "../../components/button";
-import colors from "../../components/colors";
+import Colors from "../../colors";
 
-export default function Icon({ image, name, addToQueue, onPress }) {
+export default function Icon({ image, name, addToQueue, onPress, theme }) {
+  const colors = Colors(theme);
   const [active, setActive] = useState(false);
   var activeTimeout;
 
@@ -53,6 +54,7 @@ export default function Icon({ image, name, addToQueue, onPress }) {
       </Text>
 
       <Button
+        theme={theme}
         style={{ alignSelf: "flex-end", marginRight: 10, marginBottom: 10 }}
         symbol="play"
         onPress={() => {

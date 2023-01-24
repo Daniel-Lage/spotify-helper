@@ -1,15 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
-import { useToken } from "../components/functions";
+import { useToken } from "../../src/functions";
 import request from "request";
 import Icon from "./components/icon";
-import colors from "../components/colors";
+import Colors from "../colors";
 import Load from "../load";
+import ThemePicker from "../components/themePicker";
 
 export default function Home({ navigation }) {
+  const [theme, setTheme] = useState(localStorage.getItem("theme"));
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const header = useRef();
+
+  const colors = Colors(theme);
 
   function appendPlaylists(body, accessToken, tempList) {
     tempList = [...tempList, ...body.items];
@@ -30,6 +34,10 @@ export default function Home({ navigation }) {
       setPlaylists(tempList);
     }
   }
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     document.title = "Spotify Helper - Home";
@@ -185,6 +193,13 @@ export default function Home({ navigation }) {
         }}
         ref={header}
       >
+        <ThemePicker
+          size={64}
+          style={{ position: "absolute", alignSelf: "flex-start" }}
+          top={header.current?.clientHeight}
+          theme={theme}
+          setTheme={setTheme}
+        />
         <Image
           source={require("../../assets/icon.png")}
           style={{
@@ -207,7 +222,7 @@ export default function Home({ navigation }) {
         </Text>
       </View>
       {loading ? (
-        <Load />
+        <Load theme={theme} />
       ) : (
         <View
           style={{
@@ -221,6 +236,7 @@ export default function Home({ navigation }) {
         >
           {playlists.map((playlist) => (
             <Icon
+              theme={theme}
               key={playlist.id}
               name={playlist.name}
               image={playlist.images.length ? playlist.images[0].url : null}
@@ -228,7 +244,6 @@ export default function Home({ navigation }) {
               onPress={() =>
                 navigation.navigate("Playlist", {
                   playlist: playlist,
-                  headerHeight: header.current?.clientHeight,
                 })
               }
             />

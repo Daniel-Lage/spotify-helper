@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
-import Button from "../../components/button";
-import colors from "../../components/colors";
+import Colors from "../../colors";
 
 export default function Track({
   track: {
@@ -11,7 +10,9 @@ export default function Track({
   },
   index,
   onPress,
+  theme,
 }) {
+  const colors = Colors(theme);
   const [active, setActive] = useState(false);
   var activeTimeout;
 

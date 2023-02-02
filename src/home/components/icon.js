@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Image, Pressable, Text } from "react-native";
 import Button from "../../components/button";
-import Colors from "../../colors";
 
-export default function Icon({ image, name, addToQueue, onPress, theme }) {
-  const colors = Colors(theme);
+export default function Icon({ image, name, addToQueue, onPress, colors }) {
   const [active, setActive] = useState(false);
-  var activeTimeout;
+  var timeout;
 
   return (
     <Pressable
@@ -20,10 +18,10 @@ export default function Icon({ image, name, addToQueue, onPress, theme }) {
       }}
       onPressIn={() => {
         setActive(true);
-        clearTimeout(activeTimeout);
+        clearTimeout(timeout);
       }}
       onPressOut={() => {
-        activeTimeout = setTimeout(() => {
+        timeout = setTimeout(() => {
           setActive(false);
         }, 150);
       }}
@@ -54,14 +52,12 @@ export default function Icon({ image, name, addToQueue, onPress, theme }) {
       </Text>
 
       <Button
-        theme={theme}
-        style={{ alignSelf: "flex-end", marginRight: 10, marginBottom: 10 }}
-        symbol="play"
+        colors={colors}
         onPress={() => {
           addToQueue();
         }}
-        activeColor={colors.opening}
-        inactiveColor={colors.secondary}
+        symbol="play"
+        style={{ alignSelf: "flex-end", marginRight: 10, marginBottom: 10 }}
         size={30}
       />
     </Pressable>

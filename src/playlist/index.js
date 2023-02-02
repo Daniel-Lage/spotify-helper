@@ -4,19 +4,17 @@ import { useToken } from "../../src/functions";
 import request from "request";
 import Button from "../components/button";
 import Track from "./components/track";
-import Colors from "../colors";
 import Load from "../load";
 
 export default function Playlist({
+  colors,
   navigation,
   route: {
     params: { playlist },
   },
 }) {
-  const theme = localStorage.getItem("theme");
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const colors = Colors(theme);
   const header = useRef();
 
   function appendTracks(body, accessToken, tempList) {
@@ -257,7 +255,7 @@ export default function Playlist({
           width: "100%",
           position: "fixed",
           padding: 10,
-          zIndex: 101010,
+          zIndex: 1,
           borderBottomWidth: 10,
           borderColor: colors.background,
         }}
@@ -268,7 +266,7 @@ export default function Playlist({
           onPress={() => navigation.goBack()}
           size={64}
           style={{ position: "absolute", alignSelf: "flex-start" }}
-          theme={theme}
+          colors={colors}
         />
 
         <Text
@@ -293,7 +291,7 @@ export default function Playlist({
         />
       </View>
       {loading ? (
-        <Load theme={theme} />
+        <Load colors={colors} />
       ) : (
         <>
           <View
@@ -326,7 +324,7 @@ export default function Playlist({
                 style={{ height: "100%" }}
                 symbol="play"
                 size={120}
-                theme={theme}
+                colors={colors}
               />
             </View>
           </View>
@@ -340,7 +338,7 @@ export default function Playlist({
                 key={index}
                 index={index}
                 onPress={() => addToQueueStartingFromSong(index)}
-                theme={theme}
+                colors={colors}
               />
             ))}
           </View>

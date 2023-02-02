@@ -5,12 +5,19 @@ import Playlist from "./src/playlist";
 import { useEffect, useState } from "react";
 import request from "request";
 import Load from "./src/load";
+import { getColors } from "./src/colors";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const params = new URLSearchParams(window.location.search);
   const [refreshToken, setRefreshToken] = useState();
+  const [theme, setTheme] = useState(localStorage.getItem("theme"));
+  const colors = getColors(theme, setTheme);
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   function refresh() {
     const params = new URLSearchParams({
@@ -51,7 +58,6 @@ export default function App() {
           json: true,
         },
         (error, response, body) => {
-          console.log(body);
           if (body.error) {
             refresh();
             return;
@@ -64,7 +70,7 @@ export default function App() {
   }, []);
 
   if (!refreshToken && !sessionStorage.getItem("refresh_token"))
-    return <Load theme={localStorage.getItem("theme")} />;
+    return <Load colors={colors} />;
 
   return (
     <NavigationContainer>
@@ -74,16 +80,24 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ title: "Spotify Helper - Home" }}
-        />
+        <Stack.Screen name="Home" options={{ title: "Spotify Helper - Home" }}>
+          {({ navigation }) => (
+            <Home
+              theme={theme}
+              setTheme={setTheme}
+              colors={colors}
+              navigation={navigation}
+            />
+          )}
+        </Stack.Screen>
         <Stack.Screen
           name="Playlist"
-          component={Playlist}
           options={{ title: "Spotify Helper - Playlist" }}
-        />
+        >
+          {({ navigation, route }) => (
+            <Playlist colors={colors} navigation={navigation} route={route} />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

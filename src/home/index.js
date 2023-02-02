@@ -3,17 +3,14 @@ import { Image, Text, View } from "react-native";
 import { useToken } from "../../src/functions";
 import request from "request";
 import Icon from "./components/icon";
-import Colors from "../colors";
+import { getColors } from "../colors";
 import Load from "../load";
 import ThemePicker from "../components/themePicker";
 
-export default function Home({ navigation }) {
-  const [theme, setTheme] = useState(localStorage.getItem("theme"));
+export default function Home({ theme, setTheme, colors, navigation }) {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const header = useRef();
-
-  const colors = Colors(theme);
 
   function appendPlaylists(body, accessToken, tempList) {
     tempList = [...tempList, ...body.items];
@@ -36,11 +33,6 @@ export default function Home({ navigation }) {
   }
 
   useEffect(() => {
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  useEffect(() => {
-    document.title = "Spotify Helper - Home";
     useToken((accessToken) => {
       request.get(
         {
@@ -66,6 +58,7 @@ export default function Home({ navigation }) {
           json: true,
         },
         (error, response, body) => {
+          console.log("test");
           appendTracks(body, accessToken, tracks, deviceID);
         }
       );
@@ -187,7 +180,7 @@ export default function Home({ navigation }) {
           width: "100%",
           position: "fixed",
           padding: 10,
-          zIndex: 101010,
+          zIndex: 1,
           borderBottomWidth: 10,
           borderColor: colors.background,
         }}
@@ -195,10 +188,10 @@ export default function Home({ navigation }) {
       >
         <ThemePicker
           size={64}
-          style={{ position: "absolute", alignSelf: "flex-start" }}
           top={header.current?.clientHeight}
           theme={theme}
           setTheme={setTheme}
+          colors={colors}
         />
         <Image
           source={require("../../assets/icon.png")}
@@ -222,7 +215,7 @@ export default function Home({ navigation }) {
         </Text>
       </View>
       {loading ? (
-        <Load theme={theme} />
+        <Load colors={colors} />
       ) : (
         <View
           style={{
@@ -236,7 +229,7 @@ export default function Home({ navigation }) {
         >
           {playlists.map((playlist) => (
             <Icon
-              theme={theme}
+              colors={colors}
               key={playlist.id}
               name={playlist.name}
               image={playlist.images.length ? playlist.images[0].url : null}

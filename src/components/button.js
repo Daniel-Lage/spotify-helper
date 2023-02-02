@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { Pressable } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import Colors from "../colors";
 
-export default function Button({ symbol, onPress, style, size, theme }) {
+export default function Button({ colors, onPress, symbol, style, size }) {
   const [active, setActive] = useState(false);
-  const colors = Colors(theme);
+
   var timeout;
+
   return (
     <Pressable
-      style={style}
       onPressIn={() => {
         setActive(true);
         clearTimeout(timeout);
@@ -22,11 +21,12 @@ export default function Button({ symbol, onPress, style, size, theme }) {
       onPress={() => {
         onPress();
       }}
+      style={style}
     >
       <AntDesign
+        color={active ? colors.btn_active : colors.btn_inactive}
         name={symbol}
         size={size}
-        color={active ? colors.btn_active : colors.btn_inactive}
       />
     </Pressable>
   );

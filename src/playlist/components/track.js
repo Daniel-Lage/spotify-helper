@@ -64,7 +64,7 @@ export default function Track({
         <Text
           style={{
             color: colors.secondary,
-            fontWeight: "500",
+            fontWeight: "bold",
           }}
         >
           {artists.map(({ name }) => name).join(", ")}
@@ -74,7 +74,7 @@ export default function Track({
         style={{
           color: "white",
           fontWeight: "bold",
-          fontSize: 24,
+          fontSize: 30,
         }}
       >
         {index + 1}

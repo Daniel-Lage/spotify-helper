@@ -6,37 +6,37 @@ const theme = (primary, secondary, item, dark_item) => ({
 });
 
 const themes = {
-  blue: theme(
-    "hsl(216, 60%, 60%)",
-    "hsl(216, 60%, 40%)",
-    "hsl(216, 10%, 5%)",
-    "hsl(216, 10%, 2%)"
+  cyan: theme(
+    "hsl(215, 50%, 50%)",
+    "hsl(215, 50%, 30%)",
+    "hsl(0, 0%, 20%)",
+    "hsl(0, 0%, 10%)"
   ),
-  pink: theme(
-    "hsl(342, 60%, 60%)",
-    "hsl(342, 60%, 40%)",
-    "hsl(342, 10%, 5%)",
-    "hsl(342, 10%, 2%)"
+  magenta: theme(
+    "hsl(335, 60%, 50%)",
+    "hsl(335, 60%, 30%)",
+    "hsl(0, 0%, 20%)",
+    "hsl(0, 0%, 10%)"
   ),
   green: theme(
-    "hsl(126, 60%, 60%)",
-    "hsl(126, 60%, 40%)",
-    "hsl(126, 10%, 5%)",
-    "hsl(126, 10%, 2%)"
+    "hsl(95, 50%, 50%)",
+    "hsl(95, 50%, 30%)",
+    "hsl(0, 0%, 20%)",
+    "hsl(0, 0%, 10%)"
   ),
   mono: theme(
-    "hsl(216, 0%, 40%)",
-    "hsl(216, 0%, 20%)",
-    "hsl(216, 0%, 5%)",
-    "hsl(216, 0%, 2%)"
+    "hsl(0, 0%, 40%)",
+    "hsl(0, 0%, 20%)",
+    "hsl(0, 0%, 20%)",
+    "hsl(0, 0%, 10%)"
   ),
 };
 
 export function getColors(theme, setTheme) {
-  if (!Object.keys(themes).includes(theme)) {
-    console.log(theme);
-    setTheme("blue");
-    return themes["blue"];
+  const theme_names = Object.keys(themes);
+  if (!theme_names.includes(theme)) {
+    theme = theme_names[0];
+    setTheme(theme);
   }
   return themes[theme];
 }

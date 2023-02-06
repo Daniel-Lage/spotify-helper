@@ -216,7 +216,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
               colors={colors}
               key={playlist.id}
               name={playlist.name}
-              owner={playlist.owner.display_name}
+              author={playlist.owner.display_name}
               image={playlist.images.length ? playlist.images[0].url : null}
               addToQueue={() => addToQueue(playlist.tracks.href)}
               onPress={() =>

@@ -282,55 +282,68 @@ export default function Playlist({
       </Header>
       {loading ? (
         <Load colors={colors} />
-      ) : (
-        <View
-          style={{
-            width: "100%",
-            marginTop: "12vh",
-            alignItems: "center",
-          }}
-        >
+      ) : aspectRatio > 1.6 ? (
+        <>
           <View
             style={{
-              alignItems: "flex-end",
-              justifyContent: "flex-end",
+              backgroundColor: colors.dark_item,
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              flexDirection: "column",
+              paddingBottom: "2vh",
             }}
           >
-            <Image
-              source={playlist.images.length ? playlist.images[0].url : null}
+            <View
               style={{
-                width: aspectRatio > 1.6 ? "80vw" : "25vw",
-                height: aspectRatio > 1.6 ? "80vw" : "25vw",
-                borderRadius: 5,
+                paddingTop: "12vh",
+                alignItems: "flex-end",
+                justifyContent: "flex-end",
               }}
-            />
-            <PlayButton
-              onPress={() => addToQueue()}
+            >
+              <Image
+                source={playlist.images.length ? playlist.images[0].url : null}
+                style={{
+                  width: "80vw",
+                  height: "80vw",
+                  borderRadius: 5,
+                }}
+              />
+              <PlayButton
+                onPress={() => addToQueue()}
+                style={{
+                  position: "absolute",
+                  marginBottom: "12vw",
+                  marginRight: "12vw",
+                }}
+                size={"9vh"}
+                colors={colors}
+              />
+            </View>
+            <View
               style={{
-                position: "absolute",
-                margin: aspectRatio > 1.6 ? "12vw" : "3vw",
+                marginTop: "1.5vh",
+                width: "80vw",
               }}
-              size={"9vh"}
-              colors={colors}
-            />
+            >
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontWeight: "bold",
+                }}
+              >
+                by {playlist.owner.display_name}
+              </Text>
+              <Text
+                style={{
+                  color: colors.secondary,
+                  fontWeight: "bold",
+                }}
+              >
+                {tracks.length} songs
+              </Text>
+            </View>
           </View>
-          <Text
-            style={{
-              color: colors.primary,
-              fontWeight: "bold",
-            }}
-          >
-            by {playlist.owner.display_name}
-          </Text>
-          <Text
-            style={{
-              color: colors.secondary,
-              fontWeight: "bold",
-              marginBottom: "2vh",
-            }}
-          >
-            {tracks.length} songs
-          </Text>
           <View style={{ gap: 10, marginBottom: 10 }}>
             {tracks.map(({ track }, index) => (
               <Track
@@ -342,7 +355,82 @@ export default function Playlist({
               />
             ))}
           </View>
-        </View>
+        </>
+      ) : (
+        <>
+          <View
+            style={{
+              backgroundColor: colors.dark_item,
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              flexDirection: "row",
+              paddingBottom: "2vh",
+            }}
+          >
+            <View
+              style={{
+                paddingTop: "12vh",
+                alignItems: "flex-end",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Image
+                source={playlist.images.length ? playlist.images[0].url : null}
+                style={{
+                  width: "25vw",
+                  height: "25vw",
+                  borderRadius: 5,
+                }}
+              />
+              <PlayButton
+                onPress={() => addToQueue()}
+                style={{
+                  position: "absolute",
+                  marginBottom: "3vw",
+                  marginRight: "3vw",
+                }}
+                size={"9vh"}
+                colors={colors}
+              />
+            </View>
+            <View
+              style={{
+                paddingLeft: "35vw",
+                paddingTop: "12vh",
+                position: "absolute",
+              }}
+            >
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontWeight: "bold",
+                }}
+              >
+                by {playlist.owner.display_name}
+              </Text>
+              <Text
+                style={{
+                  color: colors.secondary,
+                  fontWeight: "bold",
+                }}
+              >
+                {tracks.length} songs
+              </Text>
+            </View>
+          </View>
+          <View style={{ gap: 10, marginBottom: 10 }}>
+            {tracks.map(({ track }, index) => (
+              <Track
+                track={track}
+                key={index}
+                index={index}
+                onPress={() => addToQueueStartingFromSong(index)}
+                colors={colors}
+              />
+            ))}
+          </View>
+        </>
       )}
     </View>
   );

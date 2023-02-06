@@ -1,11 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Dimensions, Image, Pressable, Text, View } from "react-native";
 import { useToken } from "../../src/functions";
 import request from "request";
-import Button from "../components/button";
+import PlayButton from "../components/playbutton";
 import Track from "./components/track";
 import Load from "../load";
+import Header from "../components/header";
+import { AntDesign } from "@expo/vector-icons";
 
+const { height, width } = Dimensions.get("window");
+const aspectRatio = height / width;
 export default function Playlist({
   colors,
   navigation,
@@ -15,7 +19,6 @@ export default function Playlist({
 }) {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const header = useRef();
 
   function appendTracks(body, accessToken, tempList) {
     tempList = [...tempList, ...body.items];
@@ -243,39 +246,26 @@ export default function Playlist({
         width: "100%",
         minHeight: "100%",
         alignItems: "center",
-        backgroundColor: colors.background,
+        backgroundColor: "black",
         gap: 10,
       }}
     >
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: colors.primary,
-          width: "100%",
-          position: "fixed",
-          padding: 10,
-          zIndex: 1,
-          borderBottomWidth: 10,
-          borderColor: colors.background,
-        }}
-        ref={header}
-      >
-        <Button
-          symbol="leftcircle"
+      <Header colors={colors}>
+        <Pressable
           onPress={() => navigation.goBack()}
-          size={64}
           style={{ position: "absolute", alignSelf: "flex-start" }}
-          colors={colors}
-        />
+        >
+          <AntDesign name="caretleft" size={"9vh"} color={colors.secondary} />
+        </Pressable>
 
         <Text
+          numberOfLines={2}
           style={{
-            marginHorizontal: 64,
-            fontSize: "300%",
+            fontSize: "3vh",
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
+            marginHorizontal: 64,
           }}
         >
           {playlist.name}
@@ -285,50 +275,60 @@ export default function Playlist({
           style={{
             position: "absolute",
             alignSelf: "flex-end",
-            width: 72,
-            height: 72,
+            width: "9vh",
+            height: "9vh",
           }}
         />
-      </View>
+      </Header>
       {loading ? (
         <Load colors={colors} />
       ) : (
-        <>
+        <View
+          style={{
+            width: "100%",
+            marginTop: "12vh",
+            alignItems: "center",
+          }}
+        >
           <View
             style={{
-              display: "grid",
-              width: "100%",
-              gridTemplateColumns: "auto auto",
-              marginTop: header.current.clientHeight + 20,
-              alignItems: "center",
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
             }}
           >
-            <View
+            <Image
+              source={playlist.images.length ? playlist.images[0].url : null}
               style={{
-                alignItems: "center",
-                justifyContent: "center",
+                width: aspectRatio > 1.6 ? "80vw" : "25vw",
+                height: aspectRatio > 1.6 ? "80vw" : "25vw",
+                borderRadius: 5,
               }}
-            >
-              <Image
-                source={playlist.images.length ? playlist.images[0].url : null}
-                style={{
-                  width: 120,
-                  height: 120,
-                  borderRadius: 5,
-                }}
-              />
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Button
-                onPress={() => addToQueue()}
-                style={{ height: "100%" }}
-                symbol="play"
-                size={120}
-                colors={colors}
-              />
-            </View>
+            />
+            <PlayButton
+              onPress={() => addToQueue()}
+              style={{
+                position: "absolute",
+                margin: aspectRatio > 1.6 ? "12vw" : "3vw",
+              }}
+              size={"9vh"}
+              colors={colors}
+            />
           </View>
-          <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: "bold",
+            }}
+          >
+            by {playlist.owner.display_name}
+          </Text>
+          <Text
+            style={{
+              color: colors.secondary,
+              fontWeight: "bold",
+              marginBottom: "2vh",
+            }}
+          >
             {tracks.length} songs
           </Text>
           <View style={{ gap: 10, marginBottom: 10 }}>
@@ -342,7 +342,7 @@ export default function Playlist({
               />
             ))}
           </View>
-        </>
+        </View>
       )}
     </View>
   );

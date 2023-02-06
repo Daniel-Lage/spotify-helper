@@ -1,65 +1,79 @@
-import { useState } from "react";
-import { Image, Pressable, Text } from "react-native";
-import Button from "../../components/button";
+import { Image, Pressable, Text, View, Dimensions } from "react-native";
+import PlayButton from "../../components/playbutton";
 
-export default function Icon({ image, name, addToQueue, onPress, colors }) {
-  const [active, setActive] = useState(false);
-  var timeout;
+const { height, width } = Dimensions.get("window");
+const aspectRatio = height / width;
 
+export default function Icon({
+  image,
+  name,
+  owner,
+  addToQueue,
+  onPress,
+  colors,
+}) {
   return (
     <Pressable
       style={{
-        width: 120,
         alignItems: "center",
-        justifyContent: "center",
-        alignItems: "center",
+        width: aspectRatio > 1.6 ? "45vw" : "23vw",
+        marginBottom: "2vh",
         borderRadius: 5,
-        backgroundColor: active ? colors.active : colors.inactive,
-      }}
-      onPressIn={() => {
-        setActive(true);
-        clearTimeout(timeout);
-      }}
-      onPressOut={() => {
-        timeout = setTimeout(() => {
-          setActive(false);
-        }, 150);
+        backgroundColor: colors.item,
       }}
       onPress={onPress}
     >
-      <Image
-        source={image}
+      <View
         style={{
-          width: 100,
-          height: 100,
-          margin: 10,
-          borderRadius: 5,
+          alignItems: "flex-end",
+          justifyContent: "flex-end",
         }}
-      />
+      >
+        <Image
+          source={image}
+          style={{
+            width: aspectRatio > 1.6 ? "40vw" : "20vw",
+            height: aspectRatio > 1.6 ? "40vw" : "20vw",
+            margin: 10,
+            borderRadius: 5,
+          }}
+        />
+        <PlayButton
+          colors={colors}
+          onPress={() => {
+            addToQueue();
+          }}
+          symbol="play"
+          style={{
+            margin: aspectRatio > 1.6 ? "10vw" : "3vw",
+            position: "absolute",
+          }}
+          size={aspectRatio > 1.6 ? "12vw" : "4vw"}
+        />
+      </View>
       <Text
         style={{
-          height: "100%",
-          width: "100%",
-          textAlign: "center",
+          width: aspectRatio > 1.6 ? "40vw" : "20vw",
           fontSize: 15,
-          color: colors.secondary,
+          color: colors.primary,
           fontWeight: "bold",
-          pactive: 5,
-          pactiveBottom: 15,
+          padding: 5,
         }}
       >
         {name}
       </Text>
-
-      <Button
-        colors={colors}
-        onPress={() => {
-          addToQueue();
+      <Text
+        style={{
+          width: aspectRatio > 1.6 ? "40vw" : "20vw",
+          fontSize: 15,
+          color: colors.secondary,
+          fontWeight: "bold",
+          padding: 5,
+          paddingBottom: 15,
         }}
-        symbol="play"
-        style={{ alignSelf: "flex-end", marginRight: 10, marginBottom: 10 }}
-        size={30}
-      />
+      >
+        {owner}
+      </Text>
     </Pressable>
   );
 }

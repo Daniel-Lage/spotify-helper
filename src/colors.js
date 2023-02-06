@@ -1,49 +1,35 @@
+const theme = (primary, secondary, item, dark_item) => ({
+  primary: primary,
+  secondary: secondary,
+  item: item,
+  dark_item: dark_item,
+});
+
 const themes = {
-  blue: {
-    primary: "hsl(216, 60%, 60%)",
-    secondary: "hsl(216, 60%, 35%)",
-    background: "hsl(216, 10%, 10%)",
-    active: "hsl(216, 60%, 25%)",
-    inactive: "hsl(216, 40%, 50%)",
-    btn_active: "hsl(216, 60%, 25%)",
-    btn_inactive: "hsl(216, 60%, 35%)",
-  },
-  pink: {
-    primary: "hsl(342, 60%, 60%)",
-    secondary: "hsl(342, 60%, 35%)",
-    background: "hsl(342, 10%, 10%)",
-    active: "hsl(342, 60%, 25%)",
-    inactive: "hsl(342, 60%, 60%)",
-    btn_active: "hsl(342, 60%, 25%)",
-    btn_inactive: "hsl(342, 60%, 35%)",
-  },
-  green: {
-    primary: "hsl(126, 60%, 60%)",
-    secondary: "hsl(126, 60%, 35%)",
-    background: "hsl(126, 10%, 10%)",
-    active: "hsl(126, 60%, 25%)",
-    inactive: "hsl(126, 60%, 60%)",
-    btn_active: "hsl(126, 60%, 25%)",
-    btn_inactive: "hsl(126, 60%, 35%)",
-  },
-  light: {
-    primary: "hsl(126, 0%, 100%)",
-    secondary: "hsl(126, 0%, 35%)",
-    background: "hsl(126, 0%, 10%)",
-    active: "hsl(126, 0%, 25%)",
-    inactive: "hsl(126, 0%, 60%)",
-    btn_active: "hsl(126, 0%, 25%)",
-    btn_inactive: "hsl(126, 0%, 35%)",
-  },
-  dark: {
-    primary: "hsl(126, 0%, 25%)",
-    secondary: "hsl(126, 0%, 12%)",
-    background: "hsl(126, 0%, 0%)",
-    active: "hsl(126, 0%, 15%)",
-    inactive: "hsl(126, 0%, 25%)",
-    btn_active: "hsl(126, 0%, 10%)",
-    btn_inactive: "hsl(126, 0%, 12%)",
-  },
+  blue: theme(
+    "hsl(216, 60%, 60%)",
+    "hsl(216, 60%, 40%)",
+    "hsl(216, 10%, 5%)",
+    "hsl(216, 10%, 2%)"
+  ),
+  pink: theme(
+    "hsl(342, 60%, 60%)",
+    "hsl(342, 60%, 40%)",
+    "hsl(342, 10%, 5%)",
+    "hsl(342, 10%, 2%)"
+  ),
+  green: theme(
+    "hsl(126, 60%, 60%)",
+    "hsl(126, 60%, 40%)",
+    "hsl(126, 10%, 5%)",
+    "hsl(126, 10%, 2%)"
+  ),
+  mono: theme(
+    "hsl(216, 0%, 40%)",
+    "hsl(216, 0%, 20%)",
+    "hsl(216, 0%, 5%)",
+    "hsl(216, 0%, 2%)"
+  ),
 };
 
 export function getColors(theme, setTheme) {

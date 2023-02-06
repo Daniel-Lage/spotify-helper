@@ -3,14 +3,13 @@ import { Image, Text, View } from "react-native";
 import { useToken } from "../../src/functions";
 import request from "request";
 import Icon from "./components/icon";
-import { getColors } from "../colors";
 import Load from "../load";
 import ThemePicker from "../components/themePicker";
+import Header from "../components/header";
 
 export default function Home({ theme, setTheme, colors, navigation }) {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
-  const header = useRef();
 
   function appendPlaylists(body, accessToken, tempList) {
     tempList = [...tempList, ...body.items];
@@ -168,27 +167,13 @@ export default function Home({ theme, setTheme, colors, navigation }) {
         width: "100%",
         minHeight: "100%",
         alignItems: "center",
-        backgroundColor: colors.background,
+        backgroundColor: "black",
         gap: 20,
       }}
     >
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: colors.primary,
-          width: "100%",
-          position: "fixed",
-          padding: 10,
-          zIndex: 1,
-          borderBottomWidth: 10,
-          borderColor: colors.background,
-        }}
-        ref={header}
-      >
+      <Header colors={colors}>
         <ThemePicker
-          size={64}
-          top={header.current?.clientHeight}
+          size={"9vh"}
           theme={theme}
           setTheme={setTheme}
           colors={colors}
@@ -198,13 +183,13 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           style={{
             position: "absolute",
             alignSelf: "flex-end",
-            width: 72,
-            height: 72,
+            width: "9vh",
+            height: "9vh",
           }}
         />
         <Text
           style={{
-            fontSize: "300%",
+            fontSize: "3vh",
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
@@ -213,7 +198,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
         >
           Spotify Helper
         </Text>
-      </View>
+      </Header>
       {loading ? (
         <Load colors={colors} />
       ) : (
@@ -221,10 +206,9 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           style={{
             flexDirection: "row",
             flexWrap: "wrap",
-            justifyContent: "center",
-            padding: 10,
-            marginTop: header.current?.clientHeight,
-            gap: 5,
+            justifyContent: "space-evenly",
+            marginTop: "12vh",
+            marginBottom: "2vh",
           }}
         >
           {playlists.map((playlist) => (
@@ -232,6 +216,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
               colors={colors}
               key={playlist.id}
               name={playlist.name}
+              owner={playlist.owner.display_name}
               image={playlist.images.length ? playlist.images[0].url : null}
               addToQueue={() => addToQueue(playlist.tracks.href)}
               onPress={() =>

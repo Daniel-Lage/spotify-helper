@@ -1,4 +1,4 @@
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 
 export default function Load({ colors }) {
   return (
@@ -8,10 +8,8 @@ export default function Load({ colors }) {
         height: "100%",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: colors.background,
+        backgroundColor: "black",
       }}
-    >
-      <ActivityIndicator size="large" color={colors.primary} />
-    </View>
+    />
   );
 }

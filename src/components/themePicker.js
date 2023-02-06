@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getThemes } from "../colors";
 
-export default function ThemePicker({ size, top, theme, setTheme, colors }) {
+export default function ThemePicker({ size, theme, setTheme, colors }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,18 +16,19 @@ export default function ThemePicker({ size, top, theme, setTheme, colors }) {
       >
         <Ionicons name="color-palette" size={size} color={colors.secondary} />
       </Pressable>
+
       <View
         style={[
           {
             flexDirection: "row",
+            maxHeight: "10vh",
             backgroundColor: colors.primary,
             position: "fixed",
             alignSelf: "flex-start",
             borderRadius: 20,
-            padding: 5,
             transition: "top 400ms ease-in-out",
             zIndex: -1,
-            top: open ? top + 10 : 0,
+            top: open ? "12vh" : 0,
           },
         ]}
       >
@@ -44,6 +45,7 @@ export default function ThemePicker({ size, top, theme, setTheme, colors }) {
                   ? "opacity 200ms linear 300ms"
                   : "opacity 200ms linear 100ms",
                 opacity: open ? 1 : 0,
+                cursor: open ? "pointer" : "default",
               }}
             >
               <Ionicons color={value[1].primary} name="ellipse" size={size} />

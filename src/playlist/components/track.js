@@ -11,27 +11,27 @@ export default function Track({
   onPress,
   colors,
 }) {
-  const [active, setActive] = useState(false);
-  var activeTimeout;
+  const [pressed, setPressed] = useState(false);
+  var timeout;
 
   const image = images[2];
   return (
     <Pressable
       style={{
         flexDirection: "row",
-        gap: 10,
+        gap: "2vw",
         width: "80vw",
         padding: 5,
         borderRadius: 5,
-        backgroundColor: active ? colors.active : colors.inactive,
+        backgroundColor: pressed ? colors.dark_item : colors.item,
       }}
       onPressIn={() => {
-        setActive(true);
-        clearTimeout(activeTimeout);
+        setPressed(true);
+        clearTimeout(timeout);
       }}
       onPressOut={() => {
-        activeTimeout = setTimeout(() => {
-          setActive(false);
+        timeout = setTimeout(() => {
+          setPressed(false);
         }, 150);
       }}
       onPress={onPress}
@@ -40,34 +40,22 @@ export default function Track({
         <Image
           source={image.url}
           style={{
-            width: 32,
-            height: 32,
+            width: 45,
+            height: 45,
             borderRadius: 5,
           }}
         />
       )}
-      <Text
-        style={{
-          color: colors.background,
-          fontWeight: "bold",
-          fontSize: 24,
-        }}
-      >
-        {index + 1}
-      </Text>
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
           justifyContent: "center",
-          gap: "1vw",
           flexWrap: "wrap",
           flex: 1,
         }}
       >
         <Text
           style={{
-            color: colors.background,
+            color: colors.primary,
             fontWeight: "bold",
           }}
         >
@@ -82,6 +70,15 @@ export default function Track({
           {artists.map(({ name }) => name).join(", ")}
         </Text>
       </View>
+      <Text
+        style={{
+          color: "white",
+          fontWeight: "bold",
+          fontSize: 24,
+        }}
+      >
+        {index + 1}
+      </Text>
     </Pressable>
   );
 }

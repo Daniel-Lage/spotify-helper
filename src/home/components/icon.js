@@ -17,9 +17,9 @@ export default function Icon({
       style={{
         alignItems: "center",
         width: "45vw",
-        marginBottom: "2vh",
         borderRadius: 5,
         backgroundColor: colors.item,
+        shadowOpacity: 1,
       }}
       onPress={onPress}
     >
@@ -80,9 +80,10 @@ export default function Icon({
       style={{
         alignItems: "center",
         width: "23vw",
-        marginBottom: "2vh",
         borderRadius: 5,
         backgroundColor: colors.item,
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
       }}
       onPress={onPress}
     >
@@ -108,10 +109,11 @@ export default function Icon({
           }}
           symbol="play"
           style={{
-            margin: "3vw",
+            marginBottom: "3vw",
+            marginRight: "3vw",
             position: "absolute",
           }}
-          size={"4vw"}
+          size={4}
         />
       </View>
       <Text

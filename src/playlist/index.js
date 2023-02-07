@@ -246,7 +246,7 @@ export default function Playlist({
         width: "100%",
         minHeight: "100%",
         alignItems: "center",
-        backgroundColor: "black",
+        backgroundColor: colors.background,
         gap: 10,
       }}
     >
@@ -366,6 +366,12 @@ export default function Playlist({
               width: "100%",
               flexDirection: "row",
               paddingBottom: "2vh",
+              shadowOffset: {
+                width: 0,
+                height: 5,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 10,
             }}
           >
             <View
@@ -387,10 +393,10 @@ export default function Playlist({
                 onPress={() => addToQueue()}
                 style={{
                   position: "absolute",
-                  marginBottom: "3vw",
-                  marginRight: "3vw",
+                  marginBottom: "3.75vw",
+                  marginRight: "3.75vw",
                 }}
-                size={"9vh"}
+                size={5}
                 colors={colors}
               />
             </View>

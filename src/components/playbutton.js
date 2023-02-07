@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 
 export default function PlayButton({ colors, onPress, style, size }) {
   const [pressed, setPressed] = useState(false);
+  console.log(size);
   var timeout;
 
   return (
@@ -21,24 +22,33 @@ export default function PlayButton({ colors, onPress, style, size }) {
       onPress={() => {
         onPress();
       }}
-      style={[style, { alignItems: "center", justifyContent: "center" }]}
+      style={[
+        style,
+        {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      ]}
     >
       <AntDesign
+        name="caretright"
+        size={`${(size * 3) / 5}vw`}
+        color={colors.background}
         style={{
           position: "absolute",
           zIndex: 1,
         }}
-        color={pressed ? colors.secondary : colors.primary}
-        name={"play"}
-        size={size}
       />
-      <FontAwesome
+      <View
         style={{
+          width: `${size}vw`,
+          height: `${size}vw`,
+          borderRadius: `${size}vw`,
+          shadowOpacity: 0.2,
+          shadowRadius: 10,
           position: "absolute",
+          backgroundColor: pressed ? colors.secondary : colors.primary,
         }}
-        color={"black"}
-        name={"circle"}
-        size={size}
       />
     </Pressable>
   );

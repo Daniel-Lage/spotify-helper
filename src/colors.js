@@ -1,35 +1,16 @@
-const theme = (primary, secondary, item, dark_item) => ({
+const theme = (primary, secondary) => ({
   primary: primary,
   secondary: secondary,
-  item: item,
-  dark_item: dark_item,
+  item: "hsl(0, 0%, 20%)",
+  dark_item: "hsl(0, 0%, 15%)",
+  background: "hsl(0, 0%, 10%)",
 });
 
 const themes = {
-  cyan: theme(
-    "hsl(215, 50%, 50%)",
-    "hsl(215, 50%, 30%)",
-    "hsl(0, 0%, 20%)",
-    "hsl(0, 0%, 10%)"
-  ),
-  magenta: theme(
-    "hsl(335, 60%, 50%)",
-    "hsl(335, 60%, 30%)",
-    "hsl(0, 0%, 20%)",
-    "hsl(0, 0%, 10%)"
-  ),
-  green: theme(
-    "hsl(95, 50%, 50%)",
-    "hsl(95, 50%, 30%)",
-    "hsl(0, 0%, 20%)",
-    "hsl(0, 0%, 10%)"
-  ),
-  mono: theme(
-    "hsl(0, 0%, 40%)",
-    "hsl(0, 0%, 20%)",
-    "hsl(0, 0%, 20%)",
-    "hsl(0, 0%, 10%)"
-  ),
+  cyan: theme("hsl(215, 50%, 50%)", "hsl(215, 50%, 30%)"),
+  magenta: theme("hsl(335, 60%, 50%)", "hsl(335, 60%, 30%)"),
+  green: theme("hsl(95, 50%, 50%)", "hsl(95, 50%, 30%)"),
+  mono: theme("hsl(0, 0%, 40%)", "hsl(0, 0%, 20%)"),
 };
 
 export function getColors(theme, setTheme) {

@@ -8,7 +8,7 @@ export default function Load({ colors }) {
         height: "100%",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "black",
+        backgroundColor: colors.background,
       }}
     />
   );

@@ -6,6 +6,7 @@ import Icon from "./components/icon";
 import Load from "../load";
 import ThemePicker from "../components/themePicker";
 import Header from "../components/header";
+import { Shadow } from "react-native-shadow-2";
 
 export default function Home({ theme, setTheme, colors, navigation }) {
   const [playlists, setPlaylists] = useState([]);
@@ -167,7 +168,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
         width: "100%",
         minHeight: "100%",
         alignItems: "center",
-        backgroundColor: "black",
+        backgroundColor: colors.background,
         gap: 20,
       }}
     >
@@ -207,6 +208,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
             flexDirection: "row",
             flexWrap: "wrap",
             justifyContent: "space-evenly",
+            gap: "2vh",
             marginTop: "12vh",
             marginBottom: "2vh",
           }}

@@ -19,7 +19,12 @@ export default function Icon({
         width: "45vw",
         borderRadius: 5,
         backgroundColor: colors.item,
-        shadowOpacity: 1,
+        shadowOffset: {
+          width: 0,
+          height: 5,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
       }}
       onPress={onPress}
     >
@@ -45,10 +50,11 @@ export default function Icon({
           }}
           symbol="play"
           style={{
-            margin: "10vw",
+            marginBottom: "10vw",
+            marginRight: "10vw",
             position: "absolute",
           }}
-          size={"12vw"}
+          size={12}
         />
       </View>
       <Text
@@ -82,7 +88,11 @@ export default function Icon({
         width: "23vw",
         borderRadius: 5,
         backgroundColor: colors.item,
-        shadowOpacity: 0.2,
+        shadowOffset: {
+          width: 0,
+          height: 5,
+        },
+        shadowOpacity: 0.3,
         shadowRadius: 10,
       }}
       onPress={onPress}

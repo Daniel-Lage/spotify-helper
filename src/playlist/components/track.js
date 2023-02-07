@@ -26,9 +26,9 @@ export default function Track({
         backgroundColor: pressed ? colors.dark_item : colors.item,
         shadowOffset: {
           width: 0,
-          height: 0,
+          height: 5,
         },
-        shadowOpacity: 0.2,
+        shadowOpacity: 0.3,
         shadowRadius: 10,
       }}
       onPressIn={() => {

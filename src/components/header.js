@@ -13,12 +13,8 @@ export default function Header({ colors, children }) {
         paddingRight: "2vw",
         position: "fixed",
         zIndex: 1,
-        shadowOffset: {
-          width: 0,
-          height: 5,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 10,
+        shadowOpacity: 0.4,
+        shadowRadius: 15,
       }}
     >
       {children}

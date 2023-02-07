@@ -10,6 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 const { height, width } = Dimensions.get("window");
 const aspectRatio = height / width;
+
 export default function Playlist({
   colors,
   navigation,
@@ -292,6 +293,8 @@ export default function Playlist({
               width: "100%",
               flexDirection: "column",
               paddingBottom: "2vh",
+              shadowOpacity: 0.5,
+              shadowRadius: 15,
             }}
           >
             <View
@@ -312,11 +315,11 @@ export default function Playlist({
               <PlayButton
                 onPress={() => addToQueue()}
                 style={{
-                  position: "absolute",
                   marginBottom: "12vw",
                   marginRight: "12vw",
+                  position: "absolute",
                 }}
-                size={"9vh"}
+                size={20}
                 colors={colors}
               />
             </View>
@@ -366,12 +369,8 @@ export default function Playlist({
               width: "100%",
               flexDirection: "row",
               paddingBottom: "2vh",
-              shadowOffset: {
-                width: 0,
-                height: 5,
-              },
-              shadowOpacity: 0.2,
-              shadowRadius: 10,
+              shadowOpacity: 0.5,
+              shadowRadius: 15,
             }}
           >
             <View

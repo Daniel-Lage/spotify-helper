@@ -5,7 +5,6 @@ import { FontAwesome } from "@expo/vector-icons";
 
 export default function PlayButton({ colors, onPress, style, size }) {
   const [pressed, setPressed] = useState(false);
-  console.log(size);
   var timeout;
 
   return (
@@ -44,7 +43,11 @@ export default function PlayButton({ colors, onPress, style, size }) {
           width: `${size}vw`,
           height: `${size}vw`,
           borderRadius: `${size}vw`,
-          shadowOpacity: 0.2,
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.3,
           shadowRadius: 10,
           position: "absolute",
           backgroundColor: pressed ? colors.secondary : colors.primary,

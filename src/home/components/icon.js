@@ -1,4 +1,6 @@
 import { Image, Pressable, Text, View, Dimensions } from "react-native";
+import Cover from "../../components/cover";
+
 import PlayButton from "../../components/playbutton";
 
 const { height, width } = Dimensions.get("window");
@@ -27,35 +29,7 @@ export default function Icon({
       }}
       onPress={onPress}
     >
-      <View
-        style={{
-          alignItems: "flex-end",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Image
-          source={image}
-          style={{
-            width: "40vw",
-            height: "40vw",
-            borderTopRightRadius: 5,
-            borderTopLeftRadius: 5,
-          }}
-        />
-        <PlayButton
-          colors={colors}
-          onPress={() => {
-            addToQueue();
-          }}
-          symbol="play"
-          style={{
-            marginBottom: "10vw",
-            marginRight: "10vw",
-            position: "absolute",
-          }}
-          size={12}
-        />
-      </View>
+      <Cover image={image} colors={colors} size={42} />
       <Text
         numberOfLines={1}
         style={{
@@ -97,35 +71,7 @@ export default function Icon({
       }}
       onPress={onPress}
     >
-      <View
-        style={{
-          alignItems: "flex-end",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Image
-          source={image}
-          style={{
-            width: "18vw",
-            height: "18vw",
-            borderTopRightRadius: 5,
-            borderTopLeftRadius: 5,
-          }}
-        />
-        <PlayButton
-          colors={colors}
-          onPress={() => {
-            addToQueue();
-          }}
-          symbol="play"
-          style={{
-            marginBottom: "3vw",
-            marginRight: "3vw",
-            position: "absolute",
-          }}
-          size={4}
-        />
-      </View>
+      <Cover image={image} colors={colors} size={18} />
       <Text
         numberOfLines={1}
         style={{

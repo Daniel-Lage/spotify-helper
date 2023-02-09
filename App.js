@@ -1,11 +1,12 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
+
+import request from "request";
+
+import { getColors } from "./src/colors";
 import Home from "./src/home";
 import Playlist from "./src/playlist";
-import { useEffect, useState } from "react";
-import request from "request";
-import { getColors } from "./src/colors";
-import { View } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -92,6 +93,47 @@ export default function App() {
         <Stack.Screen
           name="Playlist"
           options={{ title: "Spotify Helper - Playlist" }}
+          initialParams={{
+            playlist: {
+              collaborative: false,
+              description:
+                "Um match de músicas feito para dancvkk e vivi. Atualizado todos os dias.",
+              external_urls: {
+                spotify:
+                  "https://open.spotify.com/playlist/37i9dQZF1EJIhdFnunDJAt",
+              },
+              href: "https://api.spotify.com/v1/playlists/37i9dQZF1EJIhdFnunDJAt",
+              id: "37i9dQZF1EJIhdFnunDJAt",
+              images: [
+                {
+                  height: null,
+                  url: "https://blend-playlist-covers.spotifycdn.com/v2/blend_LARGE-royal-azure-pt-br.jpg",
+                  width: null,
+                },
+              ],
+              name: "vivi + dancvkk",
+              owner: {
+                display_name: "Spotify",
+                external_urls: {
+                  spotify: "https://open.spotify.com/user/spotify",
+                },
+                href: "https://api.spotify.com/v1/users/spotify",
+                id: "spotify",
+                type: "user",
+                uri: "spotify:user:spotify",
+              },
+              primary_color: null,
+              public: false,
+              snapshot_id:
+                "MCwwMDAwMDAwMDZiY2NjNjk5MGZjYWFjNWY3ODQzY2JhNmNmODJkZjli",
+              tracks: {
+                href: "https://api.spotify.com/v1/playlists/37i9dQZF1EJIhdFnunDJAt/tracks",
+                total: 50,
+              },
+              type: "playlist",
+              uri: "spotify:playlist:37i9dQZF1EJIhdFnunDJAt",
+            },
+          }}
         >
           {({ navigation, route }) => (
             <Playlist colors={colors} navigation={navigation} route={route} />

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
+import { useState } from "react";
 
 export default function Track({
   track: {
@@ -19,9 +19,9 @@ export default function Track({
     <Pressable
       style={{
         flexDirection: "row",
-        gap: "2vw",
-        width: "80vw",
-        padding: 5,
+        alignItems: "center",
+        gap: "1vw",
+        width: "80%",
         borderRadius: 5,
         backgroundColor: pressed ? colors.dark_item : colors.item,
         shadowOffset: {
@@ -54,7 +54,6 @@ export default function Track({
       )}
       <View
         style={{
-          justifyContent: "center",
           flexWrap: "wrap",
           flex: 1,
         }}
@@ -81,6 +80,7 @@ export default function Track({
           color: "white",
           fontWeight: "bold",
           fontSize: 30,
+          marginRight: "1vw",
         }}
       >
         {index + 1}

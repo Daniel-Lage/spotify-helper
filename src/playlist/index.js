@@ -6,6 +6,7 @@ import PlayButton from "../components/playbutton";
 import Track from "./components/track";
 import Header from "../components/header";
 import { AntDesign } from "@expo/vector-icons";
+import Cover from "../components/cover";
 
 const { height, width } = Dimensions.get("window");
 const aspectRatio = height / width;
@@ -239,15 +240,13 @@ export default function Playlist({
       );
     });
   }
-  console.log(playlist);
+
   return (
     <View
       style={{
         width: "100%",
-        minHeight: "100%",
+        height: "100%",
         alignItems: "center",
-        backgroundColor: colors.background,
-        gap: 10,
       }}
     >
       <Header colors={colors}>
@@ -281,45 +280,30 @@ export default function Playlist({
         />
       </Header>
       {aspectRatio > 1.6 ? (
-        <>
+        <View
+          style={{
+            width: "100%",
+            flex: 1,
+            overflowY: "scroll",
+            backgroundColor: colors.background,
+          }}
+        >
           <View
             style={{
               backgroundColor: colors.dark_item,
               alignItems: "center",
               justifyContent: "center",
+              height: "50vh",
               width: "100%",
-              flexDirection: "column",
-              paddingBottom: "2vh",
-              shadowOpacity: 0.5,
+              shadowOpacity: 0.3,
               shadowRadius: 15,
             }}
           >
-            <View
-              style={{
-                paddingTop: "12vh",
-                alignItems: "flex-end",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Image
-                source={playlist.images.length ? playlist.images[0].url : null}
-                style={{
-                  width: "80vw",
-                  height: "80vw",
-                  borderRadius: 5,
-                }}
-              />
-              <PlayButton
-                onPress={() => addToQueue()}
-                style={{
-                  marginBottom: "12vw",
-                  marginRight: "12vw",
-                  position: "absolute",
-                }}
-                size={20}
-                colors={colors}
-              />
-            </View>
+            <Cover
+              image={playlist.images.length ? playlist.images[0].url : null}
+              colors={colors}
+              size={78}
+            />
             <View
               style={{
                 marginTop: "1.5vh",
@@ -344,7 +328,14 @@ export default function Playlist({
               </Text>
             </View>
           </View>
-          <View style={{ gap: 10, marginBottom: 10 }}>
+          <View
+            style={{
+              gap: "1vh",
+              width: "100%",
+              paddingVertical: "1vh",
+              alignItems: "center",
+            }}
+          >
             {loading ||
               tracks.map(({ track }, index) => (
                 <Track
@@ -356,73 +347,69 @@ export default function Playlist({
                 />
               ))}
           </View>
-        </>
+        </View>
       ) : (
-        <>
+        <View
+          style={{
+            width: "100%",
+            flex: 1,
+            overflowY: "scroll",
+            backgroundColor: colors.background,
+          }}
+        >
           <View
             style={{
               backgroundColor: colors.dark_item,
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "50vh",
               width: "100%",
-              paddingHorizontal: "10vw",
-              paddingBottom: "2vh",
-              paddingTop: "12vh",
-              flexDirection: "row",
-              shadowOpacity: 0.5,
+              shadowOpacity: 0.3,
               shadowRadius: 15,
             }}
           >
             <View
               style={{
-                alignItems: "flex-end",
-                justifyContent: "flex-end",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                gap: "1vh",
+                width: "80%",
               }}
             >
-              <Image
-                source={playlist.images.length ? playlist.images[0].url : null}
-                style={{
-                  width: "25vw",
-                  height: "25vw",
-                  borderRadius: 5,
-                }}
-              />
-              <PlayButton
-                onPress={() => addToQueue()}
-                style={{
-                  position: "absolute",
-                  marginBottom: "3.75vw",
-                  marginRight: "3.75vw",
-                }}
-                size={5}
+              <Cover
+                image={playlist.images.length ? playlist.images[0].url : null}
                 colors={colors}
+                size={24}
               />
-            </View>
-            <View
-              style={{
-                paddingLeft: "26vw",
-                position: "absolute",
-              }}
-            >
-              <Text
-                style={{
-                  color: colors.primary,
-                  fontWeight: "bold",
-                }}
-              >
-                by {playlist.owner.display_name}
-              </Text>
-              <Text
-                style={{
-                  color: colors.secondary,
-                  fontWeight: "bold",
-                }}
-              >
-                {playlist.tracks.total} songs
-              </Text>
+              <View>
+                <Text
+                  style={{
+                    color: colors.primary,
+                    fontWeight: "bold",
+                  }}
+                >
+                  by {playlist.owner.display_name}
+                </Text>
+                <Text
+                  style={{
+                    color: colors.secondary,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {playlist.tracks.total} songs
+                </Text>
+              </View>
             </View>
           </View>
-          <View style={{ gap: 10, marginBottom: 10 }}>
+          <View
+            style={{
+              gap: "1vh",
+              width: "100%",
+              paddingVertical: "1vh",
+              alignItems: "center",
+            }}
+          >
             {loading ||
               tracks.map(({ track }, index) => (
                 <Track
@@ -434,7 +421,7 @@ export default function Playlist({
                 />
               ))}
           </View>
-        </>
+        </View>
       )}
     </View>
   );

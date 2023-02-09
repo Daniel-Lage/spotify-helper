@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { FlatList, Image, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+
 import { useToken } from "../../src/functions";
 import request from "request";
-import Icon from "./components/icon";
+
 import ThemePicker from "../components/themePicker";
 import Header from "../components/header";
+import Icon from "./components/icon";
 
 export default function Home({ theme, setTheme, colors, navigation }) {
   const [playlists, setPlaylists] = useState([]);
@@ -56,7 +58,6 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           json: true,
         },
         (error, response, body) => {
-          console.log("test");
           appendTracks(body, accessToken, tracks, deviceID);
         }
       );
@@ -151,7 +152,6 @@ export default function Home({ theme, setTheme, colors, navigation }) {
               json: true,
             },
             (error, response, body) => {
-              console.log(body);
               appendTracks(body, accessToken, [], deviceID);
             }
           );
@@ -166,8 +166,6 @@ export default function Home({ theme, setTheme, colors, navigation }) {
         width: "100%",
         minHeight: "100%",
         alignItems: "center",
-        backgroundColor: colors.background,
-        gap: 20,
       }}
     >
       <Header colors={colors}>
@@ -198,18 +196,21 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           Spotify Helper
         </Text>
       </Header>
-      {loading || (
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: "2vh",
-            marginTop: "12vh",
-            marginBottom: "2vh",
-          }}
-        >
-          {playlists.map((playlist) => (
+      <View
+        style={{
+          width: "100%",
+          height: "90vh",
+          overflowY: "scroll",
+          backgroundColor: colors.background,
+          flexWrap: "wrap",
+          paddingVertical: "2vh",
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: "2vh",
+        }}
+      >
+        {loading ||
+          playlists.map((playlist) => (
             <Icon
               colors={colors}
               key={playlist.id}
@@ -224,8 +225,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
               }
             />
           ))}
-        </View>
-      )}
+      </View>
     </View>
   );
 }

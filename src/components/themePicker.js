@@ -1,18 +1,19 @@
-import { useState } from "react";
 import { Pressable, View } from "react-native";
+import { useState } from "react";
+
 import { Ionicons } from "@expo/vector-icons";
+
 import { getThemes } from "../colors";
 
 export default function ThemePicker({ size, theme, setTheme, colors }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
+    <View style={{ position: "absolute", alignSelf: "flex-start" }}>
       <Pressable
         onPress={() => {
-          if (top) setOpen((prev) => !prev);
+          setOpen((prev) => !prev);
         }}
-        style={{ position: "absolute", alignSelf: "flex-start" }}
       >
         <Ionicons name="color-palette" size={size} color={colors.secondary} />
       </Pressable>
@@ -23,11 +24,10 @@ export default function ThemePicker({ size, theme, setTheme, colors }) {
             flexDirection: "row",
             maxHeight: "10vh",
             backgroundColor: colors.primary,
-            position: "fixed",
-            alignSelf: "flex-start",
+            position: "absolute",
+            zIndex: -1,
             borderRadius: 20,
             transition: "top 400ms ease-in-out",
-            zIndex: -1,
             top: open ? "12vh" : 0,
           },
         ]}
@@ -52,6 +52,6 @@ export default function ThemePicker({ size, theme, setTheme, colors }) {
             </Pressable>
           ))}
       </View>
-    </>
+    </View>
   );
 }

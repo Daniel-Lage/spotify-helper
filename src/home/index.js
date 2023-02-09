@@ -3,10 +3,8 @@ import { Image, Text, View } from "react-native";
 import { useToken } from "../../src/functions";
 import request from "request";
 import Icon from "./components/icon";
-import Load from "../load";
 import ThemePicker from "../components/themePicker";
 import Header from "../components/header";
-import { Shadow } from "react-native-shadow-2";
 
 export default function Home({ theme, setTheme, colors, navigation }) {
   const [playlists, setPlaylists] = useState([]);
@@ -200,14 +198,12 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           Spotify Helper
         </Text>
       </Header>
-      {loading ? (
-        <Load colors={colors} />
-      ) : (
+      {loading || (
         <View
           style={{
             flexDirection: "row",
             flexWrap: "wrap",
-            justifyContent: "space-evenly",
+            justifyContent: "center",
             gap: "2vh",
             marginTop: "12vh",
             marginBottom: "2vh",

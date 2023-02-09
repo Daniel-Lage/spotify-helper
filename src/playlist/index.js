@@ -4,7 +4,6 @@ import { useToken } from "../../src/functions";
 import request from "request";
 import PlayButton from "../components/playbutton";
 import Track from "./components/track";
-import Load from "../load";
 import Header from "../components/header";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -240,7 +239,7 @@ export default function Playlist({
       );
     });
   }
-
+  console.log(playlist);
   return (
     <View
       style={{
@@ -281,9 +280,7 @@ export default function Playlist({
           }}
         />
       </Header>
-      {loading ? (
-        <Load colors={colors} />
-      ) : aspectRatio > 1.6 ? (
+      {aspectRatio > 1.6 ? (
         <>
           <View
             style={{
@@ -343,20 +340,21 @@ export default function Playlist({
                   fontWeight: "bold",
                 }}
               >
-                {tracks.length} songs
+                {playlist.tracks.total} songs
               </Text>
             </View>
           </View>
           <View style={{ gap: 10, marginBottom: 10 }}>
-            {tracks.map(({ track }, index) => (
-              <Track
-                track={track}
-                key={index}
-                index={index}
-                onPress={() => addToQueueStartingFromSong(index)}
-                colors={colors}
-              />
-            ))}
+            {loading ||
+              tracks.map(({ track }, index) => (
+                <Track
+                  track={track}
+                  key={index}
+                  index={index}
+                  onPress={() => addToQueueStartingFromSong(index)}
+                  colors={colors}
+                />
+              ))}
           </View>
         </>
       ) : (
@@ -364,18 +362,19 @@ export default function Playlist({
           <View
             style={{
               backgroundColor: colors.dark_item,
-              alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
               width: "100%",
-              flexDirection: "row",
+              paddingHorizontal: "10vw",
               paddingBottom: "2vh",
+              paddingTop: "12vh",
+              flexDirection: "row",
               shadowOpacity: 0.5,
               shadowRadius: 15,
             }}
           >
             <View
               style={{
-                paddingTop: "12vh",
                 alignItems: "flex-end",
                 justifyContent: "flex-end",
               }}
@@ -401,8 +400,7 @@ export default function Playlist({
             </View>
             <View
               style={{
-                paddingLeft: "35vw",
-                paddingTop: "12vh",
+                paddingLeft: "26vw",
                 position: "absolute",
               }}
             >
@@ -420,20 +418,21 @@ export default function Playlist({
                   fontWeight: "bold",
                 }}
               >
-                {tracks.length} songs
+                {playlist.tracks.total} songs
               </Text>
             </View>
           </View>
           <View style={{ gap: 10, marginBottom: 10 }}>
-            {tracks.map(({ track }, index) => (
-              <Track
-                track={track}
-                key={index}
-                index={index}
-                onPress={() => addToQueueStartingFromSong(index)}
-                colors={colors}
-              />
-            ))}
+            {loading ||
+              tracks.map(({ track }, index) => (
+                <Track
+                  track={track}
+                  key={index}
+                  index={index}
+                  onPress={() => addToQueueStartingFromSong(index)}
+                  colors={colors}
+                />
+              ))}
           </View>
         </>
       )}

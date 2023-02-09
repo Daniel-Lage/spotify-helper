@@ -4,8 +4,8 @@ import Home from "./src/home";
 import Playlist from "./src/playlist";
 import { useEffect, useState } from "react";
 import request from "request";
-import Load from "./src/load";
 import { getColors } from "./src/colors";
+import { View } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -69,8 +69,7 @@ export default function App() {
     }
   }, []);
 
-  if (!refreshToken && !sessionStorage.getItem("refresh_token"))
-    return <Load colors={colors} />;
+  if (!refreshToken && !sessionStorage.getItem("refresh_token")) return;
 
   return (
     <NavigationContainer>

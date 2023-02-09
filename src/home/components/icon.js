@@ -16,7 +16,6 @@ export default function Icon({
     <Pressable
       style={{
         alignItems: "center",
-        width: "45vw",
         borderRadius: 5,
         backgroundColor: colors.item,
         shadowOffset: {
@@ -39,8 +38,8 @@ export default function Icon({
           style={{
             width: "40vw",
             height: "40vw",
-            margin: 10,
-            borderRadius: 5,
+            borderTopRightRadius: 5,
+            borderTopLeftRadius: 5,
           }}
         />
         <PlayButton
@@ -58,6 +57,7 @@ export default function Icon({
         />
       </View>
       <Text
+        numberOfLines={1}
         style={{
           width: "40vw",
           fontSize: 15,
@@ -69,6 +69,7 @@ export default function Icon({
         {name}
       </Text>
       <Text
+        numberOfLines={1}
         style={{
           width: "40vw",
           fontSize: 15,
@@ -85,7 +86,6 @@ export default function Icon({
     <Pressable
       style={{
         alignItems: "center",
-        width: "23vw",
         borderRadius: 5,
         backgroundColor: colors.item,
         shadowOffset: {
@@ -106,10 +106,10 @@ export default function Icon({
         <Image
           source={image}
           style={{
-            width: "20vw",
-            height: "20vw",
-            margin: 10,
-            borderRadius: 5,
+            width: "18vw",
+            height: "18vw",
+            borderTopRightRadius: 5,
+            borderTopLeftRadius: 5,
           }}
         />
         <PlayButton
@@ -127,8 +127,9 @@ export default function Icon({
         />
       </View>
       <Text
+        numberOfLines={1}
         style={{
-          width: "20vw",
+          width: "18vw",
           fontSize: 15,
           color: colors.primary,
           fontWeight: "bold",
@@ -138,8 +139,9 @@ export default function Icon({
         {name}
       </Text>
       <Text
+        numberOfLines={1}
         style={{
-          width: "20vw",
+          width: "18vw",
           fontSize: 15,
           color: colors.secondary,
           fontWeight: "bold",

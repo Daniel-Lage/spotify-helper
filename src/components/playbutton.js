@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
 
 export default function PlayButton({ colors, onPress, style, size }) {
   const [pressed, setPressed] = useState(false);

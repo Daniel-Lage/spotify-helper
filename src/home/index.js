@@ -1,16 +1,26 @@
-import { FlatList, Image, Text, View } from "react-native";
 import { useEffect, useState } from "react";
+import { Image, Text, View } from "react-native";
 
-import { useToken } from "../../src/functions";
 import request from "request";
+import { useToken } from "../../src/functions";
 
-import ThemePicker from "../components/themePicker";
 import Header from "../components/header";
+import Sorter from "../components/sorter";
+import ThemePicker from "../components/themePicker";
 import Icon from "./components/icon";
+
+const sortKeys = { Name: ["name"], Author: ["owner", "display_name"] };
 
 export default function Home({ theme, setTheme, colors, navigation }) {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [sortKey, setSortKey] = useState(
+    localStorage.getItem("playlist-sort-key") || "Name"
+  );
+  const [sortOrder, setSortOrder] = useState(
+    parseInt(localStorage.getItem("playlist-sort-order")) || 1
+  );
 
   function appendPlaylists(body, accessToken, tempList) {
     tempList = [...tempList, ...body.items];
@@ -28,7 +38,17 @@ export default function Home({ theme, setTheme, colors, navigation }) {
       );
     } else {
       setLoading(false);
-      setPlaylists(tempList);
+      setPlaylists(
+        tempList.sort((a, b) => {
+          sortKeys[sortKey].forEach((index) => {
+            a = a[index];
+            b = b[index];
+          });
+          if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
+          if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
+          return 0;
+        })
+      );
     }
   }
 
@@ -46,6 +66,30 @@ export default function Home({ theme, setTheme, colors, navigation }) {
       );
     });
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("playlist-sort-key", sortKey);
+    setPlaylists((prev) => {
+      const tempList = [...prev];
+      return tempList.sort((a, b) => {
+        sortKeys[sortKey].forEach((index) => {
+          a = a[index];
+          b = b[index];
+        });
+        if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
+        if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
+        return 0;
+      });
+    });
+  }, [sortKey]);
+
+  useEffect(() => {
+    localStorage.setItem("playlist-sort-order", sortOrder.toString());
+    setPlaylists((prev) => {
+      const next = [...prev];
+      return next.reverse();
+    });
+  }, [sortOrder]);
 
   function appendTracks(body, accessToken, tracks, deviceID) {
     tracks = [...tracks, ...body.items];
@@ -166,6 +210,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
         width: "100%",
         minHeight: "100%",
         alignItems: "center",
+        backgroundColor: colors.background,
       }}
     >
       <Header colors={colors}>
@@ -190,7 +235,8 @@ export default function Home({ theme, setTheme, colors, navigation }) {
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
-            marginHorizontal: 64,
+            zIndex: 1,
+            marginHorizontal: "9vh",
           }}
         >
           Spotify Helper
@@ -201,30 +247,44 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           width: "100%",
           height: "90vh",
           overflowY: "scroll",
-          backgroundColor: colors.background,
-          flexWrap: "wrap",
-          paddingVertical: "2vh",
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: "2vh",
+          alignItems: "center",
         }}
       >
-        {loading ||
-          playlists.map((playlist) => (
-            <Icon
-              colors={colors}
-              key={playlist.id}
-              name={playlist.name}
-              author={playlist.owner.display_name}
-              image={playlist.images.length ? playlist.images[0].url : null}
-              addToQueue={() => addToQueue(playlist.tracks.href)}
-              onPress={() =>
-                navigation.navigate("Playlist", {
-                  playlist: playlist,
-                })
-              }
-            />
-          ))}
+        <Sorter
+          colors={colors}
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          keys={sortKeys}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+        />
+        <View
+          style={{
+            width: "100%",
+            flexWrap: "wrap",
+            paddingVertical: "2vh",
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: "2vh",
+          }}
+        >
+          {loading ||
+            playlists.map((playlist) => (
+              <Icon
+                colors={colors}
+                key={playlist.id}
+                name={playlist.name}
+                author={playlist.owner.display_name}
+                image={playlist.images.length ? playlist.images[0].url : null}
+                addToQueue={() => addToQueue(playlist.tracks.href)}
+                onPress={() =>
+                  navigation.navigate("Playlist", {
+                    playlist: playlist,
+                  })
+                }
+              />
+            ))}
+        </View>
       </View>
     </View>
   );

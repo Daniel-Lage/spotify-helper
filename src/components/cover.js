@@ -1,7 +1,7 @@
 import { Image, View } from "react-native";
 import PlayButton from "./playbutton";
 
-export default function Cover({ colors, image, size }) {
+export default function Cover({ colors, image, size, onPress }) {
   return (
     <View
       style={{
@@ -20,9 +20,7 @@ export default function Cover({ colors, image, size }) {
       />
       <PlayButton
         colors={colors}
-        onPress={() => {
-          addToQueue();
-        }}
+        onPress={onPress}
         symbol="play"
         style={{
           margin: `${size / 6}vw`,

@@ -1,15 +1,25 @@
 import { useEffect, useState } from "react";
 import { Dimensions, Image, Pressable, Text, View } from "react-native";
-import { useToken } from "../../src/functions";
-import request from "request";
-import PlayButton from "../components/playbutton";
-import Track from "./components/track";
-import Header from "../components/header";
 import { AntDesign } from "@expo/vector-icons";
+
+import request from "request";
+
+import { useToken } from "../../src/functions";
 import Cover from "../components/cover";
+import Header from "../components/header";
+import Track from "./components/track";
+import Sorter from "../components/sorter";
 
 const { height, width } = Dimensions.get("window");
 const aspectRatio = height / width;
+const mobile = aspectRatio > 1.6;
+
+const sortKeys = {
+  Name: ["track", "name"],
+  Artist: ["track", "artists", 0, "name"],
+  Album: ["track", "album", "name"],
+  "Added At": ["added_at"],
+};
 
 export default function Playlist({
   colors,
@@ -19,7 +29,12 @@ export default function Playlist({
   },
 }) {
   const [tracks, setTracks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const [sortKey, setSortKey] = useState(
+    localStorage.getItem("track-sort-key") || "Added At"
+  );
+  const [sortOrder, setSortOrder] = useState(1);
 
   function appendTracks(body, accessToken, tempList) {
     tempList = [...tempList, ...body.items];
@@ -36,9 +51,43 @@ export default function Playlist({
       );
     } else {
       setLoading(false);
-      setTracks(tempList);
+      setTracks(
+        tempList.sort((a, b) => {
+          sortKeys[sortKey].forEach((index) => {
+            a = a[index];
+            b = b[index];
+          });
+          if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
+          if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
+          return 0;
+        })
+      );
     }
   }
+
+  useEffect(() => {
+    localStorage.setItem("track-sort-key", sortKey);
+    setTracks((prev) => {
+      const tempList = [...prev];
+      return tempList.sort((a, b) => {
+        sortKeys[sortKey].forEach((index) => {
+          console.log(a, b);
+          a = a[index];
+          b = b[index];
+        });
+        if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
+        if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
+        return 0;
+      });
+    });
+  }, [sortKey]);
+
+  useEffect(() => {
+    setTracks((prev) => {
+      const next = [...prev];
+      return next.reverse();
+    });
+  }, [sortOrder]);
 
   useEffect(() => {
     navigation.setOptions({ title: "Spotify Helper - " + playlist.name });
@@ -240,7 +289,6 @@ export default function Playlist({
       );
     });
   }
-
   return (
     <View
       style={{
@@ -251,7 +299,7 @@ export default function Playlist({
     >
       <Header colors={colors}>
         <Pressable
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
           style={{ position: "absolute", alignSelf: "flex-start" }}
         >
           <AntDesign name="caretleft" size={"9vh"} color={colors.secondary} />
@@ -267,7 +315,7 @@ export default function Playlist({
             marginHorizontal: 64,
           }}
         >
-          {playlist.name}
+          Spotify Helper
         </Text>
         <Image
           source={require("../../assets/icon.png")}
@@ -279,7 +327,7 @@ export default function Playlist({
           }}
         />
       </Header>
-      {aspectRatio > 1.6 ? (
+      {mobile ? (
         <View
           style={{
             width: "100%",
@@ -293,7 +341,7 @@ export default function Playlist({
               backgroundColor: colors.dark_item,
               alignItems: "center",
               justifyContent: "center",
-              height: "50vh",
+              height: "94vw",
               width: "100%",
               shadowOpacity: 0.3,
               shadowRadius: 15,
@@ -302,7 +350,7 @@ export default function Playlist({
             <Cover
               image={playlist.images.length ? playlist.images[0].url : null}
               colors={colors}
-              size={78}
+              size={50}
             />
             <View
               style={{
@@ -316,12 +364,27 @@ export default function Playlist({
                   fontWeight: "bold",
                 }}
               >
-                by {playlist.owner.display_name}
+                {playlist.name}
               </Text>
               <Text
                 style={{
                   color: colors.secondary,
                   fontWeight: "bold",
+                }}
+              >
+                {playlist.description}
+              </Text>
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontWeight: "bold",
+                }}
+              >
+                {playlist.owner.display_name}
+              </Text>
+              <Text
+                style={{
+                  color: colors.accents,
                 }}
               >
                 {playlist.tracks.total} songs
@@ -337,13 +400,14 @@ export default function Playlist({
             }}
           >
             {loading ||
-              tracks.map(({ track }, index) => (
+              tracks.map((track, index) => (
                 <Track
                   track={track}
                   key={index}
                   index={index}
                   onPress={() => addToQueueStartingFromSong(index)}
                   colors={colors}
+                  mobile={mobile}
                 />
               ))}
           </View>
@@ -374,31 +438,58 @@ export default function Playlist({
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
                 gap: "1vh",
-                width: "80%",
+                width: "80vw",
               }}
             >
               <Cover
                 image={playlist.images.length ? playlist.images[0].url : null}
+                onPress={() => addToQueue()}
                 colors={colors}
                 size={24}
               />
-              <View>
+              <View style={{ marginLeft: "1vw", gap: "1vh" }}>
                 <Text
                   style={{
-                    color: colors.primary,
+                    fontSize: "5vh",
+                    color: colors.accents,
                     fontWeight: "bold",
                   }}
                 >
-                  by {playlist.owner.display_name}
+                  {playlist.name}
                 </Text>
                 <Text
                   style={{
+                    fontSize: "2vh",
                     color: colors.secondary,
                     fontWeight: "bold",
                   }}
                 >
+                  {playlist.description}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "3vh",
+                    color: colors.primary,
+                  }}
+                >
+                  {playlist.owner.display_name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "2vh",
+                    color: colors.accents,
+                  }}
+                >
                   {playlist.tracks.total} songs
                 </Text>
+                <Sorter
+                  colors={colors}
+                  sortKey={sortKey}
+                  setSortKey={setSortKey}
+                  keys={sortKeys}
+                  sortOrder={sortOrder}
+                  setSortOrder={setSortOrder}
+                />
               </View>
             </View>
           </View>
@@ -411,13 +502,14 @@ export default function Playlist({
             }}
           >
             {loading ||
-              tracks.map(({ track }, index) => (
+              tracks.map((track, index) => (
                 <Track
                   track={track}
                   key={index}
                   index={index}
                   onPress={() => addToQueueStartingFromSong(index)}
                   colors={colors}
+                  mobile={mobile}
                 />
               ))}
           </View>

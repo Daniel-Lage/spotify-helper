@@ -33,12 +33,12 @@ export default function ThemePicker({ size, theme, setTheme, colors }) {
         ]}
       >
         {getThemes()
-          .filter((value) => value[0] != theme)
-          .map((value) => (
+          .filter(([name, _]) => name != theme)
+          .map(([name, theme]) => (
             <Pressable
-              key={value[0]}
+              key={name}
               onPress={() => {
-                if (open) setTheme(value[0]);
+                if (open) setTheme(name);
               }}
               style={{
                 transition: open
@@ -48,7 +48,7 @@ export default function ThemePicker({ size, theme, setTheme, colors }) {
                 cursor: open ? "pointer" : "default",
               }}
             >
-              <Ionicons color={value[1].primary} name="ellipse" size={size} />
+              <Ionicons color={theme.primary} name="ellipse" size={size} />
             </Pressable>
           ))}
       </View>

@@ -18,9 +18,7 @@ export default function PlayButton({ colors, onPress, style, size }) {
           setPressed(false);
         }, 150);
       }}
-      onPress={() => {
-        onPress();
-      }}
+      onPress={onPress}
       style={[
         style,
         {

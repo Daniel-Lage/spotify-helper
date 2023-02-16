@@ -1,7 +1,5 @@
-import { Image, Pressable, Text, View, Dimensions } from "react-native";
+import { Pressable, Text, Dimensions } from "react-native";
 import Cover from "../../components/cover";
-
-import PlayButton from "../../components/playbutton";
 
 const { height, width } = Dimensions.get("window");
 const aspectRatio = height / width;
@@ -29,7 +27,7 @@ export default function Icon({
       }}
       onPress={onPress}
     >
-      <Cover image={image} colors={colors} size={42} />
+      <Cover image={image} colors={colors} size={42} onPress={addToQueue} />
       <Text
         numberOfLines={1}
         style={{
@@ -71,7 +69,7 @@ export default function Icon({
       }}
       onPress={onPress}
     >
-      <Cover image={image} colors={colors} size={18} />
+      <Cover image={image} colors={colors} size={18} onPress={addToQueue} />
       <Text
         numberOfLines={1}
         style={{

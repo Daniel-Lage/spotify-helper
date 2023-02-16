@@ -8,6 +8,7 @@ export default function Header({ colors, children }) {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: colors.primary,
+        gap: "1vh",
         width: "100vw",
         paddingLeft: "2vw",
         paddingRight: "2vw",

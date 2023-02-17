@@ -14,7 +14,7 @@ export default function App() {
   const params = new URLSearchParams(window.location.search);
   const [refreshToken, setRefreshToken] = useState();
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "blue");
-  const colors = getColors(theme, setTheme);
+  const colors = getColors(theme);
 
   useEffect(() => {
     localStorage.setItem("theme", theme);

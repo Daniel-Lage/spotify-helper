@@ -15,7 +15,7 @@ const themes = {
 };
 
 export function getColors(theme) {
-  return themes[theme];
+  return themes[theme] || themes["blue"];
 }
 
 export function getThemes() {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import request from "request";
 
-import { getColors } from "./src/colors";
+import { getColors, getThemes } from "./src/colors";
 import Home from "./src/home";
 import Playlist from "./src/playlist";
 
@@ -13,7 +13,16 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const params = new URLSearchParams(window.location.search);
   const [refreshToken, setRefreshToken] = useState();
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "blue");
+
+  const localtheme = localStorage.getItem("theme");
+  const [theme, setTheme] = useState(
+    getThemes()
+      .map(([name, _]) => name)
+      .includes(localtheme)
+      ? localtheme
+      : "blue"
+  );
+
   const colors = getColors(theme);
 
   useEffect(() => {

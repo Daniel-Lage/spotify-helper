@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Dimensions, Image, Pressable, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 import request from "request";
@@ -35,6 +42,20 @@ export default function Playlist({
     localStorage.getItem("track-sort-key") || "Added At"
   );
   const [sortOrder, setSortOrder] = useState(1);
+
+  const [filter, setFilter] = useState("");
+  const filteredTracks = useMemo(
+    () =>
+      tracks.filter(
+        (value) =>
+          value.track.name.toLowerCase().includes(filter.toLowerCase()) ||
+          value.track.album.name.toLowerCase().includes(filter.toLowerCase()) ||
+          value.track.artists.some((value) =>
+            value.name.toLowerCase().includes(filter.toLowerCase())
+          )
+      ),
+    [tracks, filter]
+  );
 
   function appendTracks(body, accessToken, tempList) {
     tempList = [...tempList, ...body.items];
@@ -341,10 +362,12 @@ export default function Playlist({
               backgroundColor: colors.dark_item,
               alignItems: "center",
               justifyContent: "center",
-              height: "94vw",
+              minHeight: "90vw",
+              paddingVertical: "5vw",
               width: "100%",
               shadowOpacity: 0.3,
               shadowRadius: 15,
+              zIndex: 1,
             }}
           >
             <Cover
@@ -390,6 +413,28 @@ export default function Playlist({
                 {playlist.tracks.total} songs
               </Text>
             </View>
+            <TextInput
+              value={filter}
+              onChangeText={setFilter}
+              placeholder="Search"
+              style={{
+                height: "4vh",
+                width: "30vh",
+                color: colors.accents,
+                textAlign: "center",
+                borderRadius: 5,
+                borderWidth: 2,
+                borderColor: colors.accents,
+              }}
+            />
+            <Sorter
+              colors={colors}
+              sortKey={sortKey}
+              setSortKey={setSortKey}
+              keys={sortKeys}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+            />
           </View>
           <View
             style={{
@@ -400,7 +445,7 @@ export default function Playlist({
             }}
           >
             {loading ||
-              tracks.map((track, index) => (
+              filteredTracks.map((track, index) => (
                 <Track
                   track={track}
                   key={index}
@@ -482,6 +527,20 @@ export default function Playlist({
                 >
                   {playlist.tracks.total} songs
                 </Text>
+                <TextInput
+                  value={filter}
+                  onChangeText={setFilter}
+                  placeholder="Search"
+                  style={{
+                    height: "4vh",
+                    width: "30vh",
+                    color: colors.accents,
+                    textAlign: "center",
+                    borderRadius: 5,
+                    borderWidth: 2,
+                    borderColor: colors.accents,
+                  }}
+                />
                 <Sorter
                   colors={colors}
                   sortKey={sortKey}
@@ -502,7 +561,7 @@ export default function Playlist({
             }}
           >
             {loading ||
-              tracks.map((track, index) => (
+              filteredTracks.map((track, index) => (
                 <Track
                   track={track}
                   key={index}

@@ -53,6 +53,8 @@ export default function Sorter({
           top: "4.5vh",
           gap: "0.5vh",
           alignItems: "center",
+          borderWidth: 2,
+          borderColor: colors.background,
           borderRadius: 5,
           backgroundColor: colors.item,
         }}

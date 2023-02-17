@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { Dimensions, Image, Text, TextInput, View } from "react-native";
 
 import request from "request";
 import { useToken } from "../../src/functions";
@@ -8,6 +8,10 @@ import Header from "../components/header";
 import Sorter from "../components/sorter";
 import ThemePicker from "../components/themePicker";
 import Icon from "./components/icon";
+
+const { height, width } = Dimensions.get("window");
+const aspectRatio = height / width;
+const mobile = aspectRatio > 1.6;
 
 const sortKeys = { Name: ["name"], Author: ["owner", "display_name"] };
 
@@ -20,6 +24,17 @@ export default function Home({ theme, setTheme, colors, navigation }) {
   );
   const [sortOrder, setSortOrder] = useState(
     parseInt(localStorage.getItem("playlist-sort-order")) || 1
+  );
+
+  const [filter, setFilter] = useState("");
+  const filteredPlaylists = useMemo(
+    () =>
+      playlists.filter(
+        (value) =>
+          value.name.toLowerCase().includes(filter.toLowerCase()) ||
+          value.owner.display_name.toLowerCase().includes(filter.toLowerCase())
+      ),
+    [playlists, filter]
   );
 
   function appendPlaylists(body, accessToken, tempList) {
@@ -250,14 +265,65 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           alignItems: "center",
         }}
       >
-        <Sorter
-          colors={colors}
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          keys={sortKeys}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-        />
+        {mobile ? (
+          <View style={{ marginTop: "1vh", zIndex: 1 }}>
+            <TextInput
+              value={filter}
+              onChangeText={setFilter}
+              placeholder="Search"
+              style={{
+                height: "4vh",
+                width: "30vh",
+                color: colors.accents,
+                textAlign: "center",
+                borderRadius: 5,
+                borderWidth: 2,
+                borderColor: colors.accents,
+              }}
+            />
+            <Sorter
+              colors={colors}
+              sortKey={sortKey}
+              setSortKey={setSortKey}
+              keys={sortKeys}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              width: "90%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: "1vh",
+              zIndex: 1,
+            }}
+          >
+            <TextInput
+              value={filter}
+              onChangeText={setFilter}
+              placeholder="Search"
+              style={{
+                height: "4vh",
+                width: "30vh",
+                color: colors.accents,
+                textAlign: "center",
+                borderRadius: 5,
+                borderWidth: 2,
+                borderColor: colors.accents,
+              }}
+            />
+            <Sorter
+              colors={colors}
+              sortKey={sortKey}
+              setSortKey={setSortKey}
+              keys={sortKeys}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+            />
+          </View>
+        )}
         <View
           style={{
             width: "100%",
@@ -269,7 +335,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
           }}
         >
           {loading ||
-            playlists.map((playlist) => (
+            filteredPlaylists.map((playlist) => (
               <Icon
                 colors={colors}
                 key={playlist.id}

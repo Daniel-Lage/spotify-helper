@@ -1,19 +1,52 @@
 import { useEffect, useMemo, useState } from "react";
-import { Dimensions, Image, Text, TextInput, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 import request from "request";
-import { useToken } from "../../src/functions";
+import { useToken } from "../functions";
 
-import Header from "../components/header";
-import Sorter from "../components/sorter";
-import ThemePicker from "../components/themePicker";
-import Icon from "./components/icon";
+import Header from "../header";
+import Sorter from "../sorter";
+import ThemePicker from "../themePicker";
+import Icon from "./icon";
 
 const { height, width } = Dimensions.get("window");
 const aspectRatio = height / width;
 const mobile = aspectRatio > 1.6;
 
-const sortKeys = { Name: ["name"], Author: ["owner", "display_name"] };
+const sortKeys = {
+  Author: (a, b) => {
+    const A = a.owner.display_name.toLowerCase();
+    const B = b.owner.display_name.toLowerCase();
+
+    if (A > B) return 1;
+    if (A < B) return -1;
+
+    return sortKeys.Name(a, b);
+  },
+  Name: (a, b) => {
+    const A = a.name.toLowerCase();
+    const B = b.name.toLowerCase();
+
+    if (A > B) return 1;
+    if (A < B) return -1;
+
+    return 0;
+  },
+  Size: (a, b) => {
+    const A = a.tracks.total;
+    const B = b.tracks.total;
+
+    return B - A;
+  },
+};
 
 export default function Home({ theme, setTheme, colors, navigation }) {
   const [playlists, setPlaylists] = useState([]);
@@ -22,11 +55,10 @@ export default function Home({ theme, setTheme, colors, navigation }) {
   const [sortKey, setSortKey] = useState(
     localStorage.getItem("playlist-sort-key") || "Name"
   );
-  const [sortOrder, setSortOrder] = useState(
-    parseInt(localStorage.getItem("playlist-sort-order")) || 1
-  );
+  const [reversed, setReversed] = useState(false);
 
   const [filter, setFilter] = useState("");
+
   const filteredPlaylists = useMemo(
     () =>
       playlists.filter(
@@ -53,17 +85,11 @@ export default function Home({ theme, setTheme, colors, navigation }) {
       );
     } else {
       setLoading(false);
-      setPlaylists(
-        tempList.sort((a, b) => {
-          sortKeys[sortKey].forEach((index) => {
-            a = a[index];
-            b = b[index];
-          });
-          if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
-          if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
-          return 0;
-        })
-      );
+
+      setPlaylists((prev) => {
+        if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
+        return tempList.sort((a, b) => sortKeys[sortKey](a, b));
+      });
     }
   }
 
@@ -86,25 +112,18 @@ export default function Home({ theme, setTheme, colors, navigation }) {
     localStorage.setItem("playlist-sort-key", sortKey);
     setPlaylists((prev) => {
       const tempList = [...prev];
-      return tempList.sort((a, b) => {
-        sortKeys[sortKey].forEach((index) => {
-          a = a[index];
-          b = b[index];
-        });
-        if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
-        if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
-        return 0;
-      });
+
+      if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
+      return tempList.sort((a, b) => sortKeys[sortKey](a, b));
     });
   }, [sortKey]);
 
   useEffect(() => {
-    localStorage.setItem("playlist-sort-order", sortOrder.toString());
     setPlaylists((prev) => {
       const next = [...prev];
       return next.reverse();
     });
-  }, [sortOrder]);
+  }, [reversed]);
 
   function appendTracks(body, accessToken, tracks, deviceID) {
     tracks = [...tracks, ...body.items];
@@ -229,12 +248,29 @@ export default function Home({ theme, setTheme, colors, navigation }) {
       }}
     >
       <Header colors={colors}>
-        <ThemePicker
-          size={"9vh"}
-          theme={theme}
-          setTheme={setTheme}
-          colors={colors}
-        />
+        <View
+          style={{
+            position: "absolute",
+            alignSelf: "flex-start",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Pressable
+            onPress={() => {
+              localStorage.removeItem("refresh_token");
+              navigation.navigate("Start");
+            }}
+          >
+            <AntDesign name="back" size={"9vh"} color={colors.secondary} />
+          </Pressable>
+          <ThemePicker
+            size={"9vh"}
+            theme={theme}
+            setTheme={setTheme}
+            colors={colors}
+          />
+        </View>
         <Image
           source={require("../../assets/icon.png")}
           style={{
@@ -286,8 +322,8 @@ export default function Home({ theme, setTheme, colors, navigation }) {
               sortKey={sortKey}
               setSortKey={setSortKey}
               keys={sortKeys}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
+              reversed={reversed}
+              setReversed={setReversed}
             />
           </View>
         ) : (
@@ -319,8 +355,8 @@ export default function Home({ theme, setTheme, colors, navigation }) {
               sortKey={sortKey}
               setSortKey={setSortKey}
               keys={sortKeys}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
+              reversed={reversed}
+              setReversed={setReversed}
             />
           </View>
         )}

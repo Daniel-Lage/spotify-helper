@@ -11,21 +11,50 @@ import { AntDesign } from "@expo/vector-icons";
 
 import request from "request";
 
-import { useToken } from "../../src/functions";
-import Cover from "../components/cover";
-import Header from "../components/header";
-import Track from "./components/track";
-import Sorter from "../components/sorter";
+import { useToken } from "../functions";
+import Cover from "../cover";
+import Header from "../header";
+import Track from "./track";
+import Sorter from "../sorter";
 
 const { height, width } = Dimensions.get("window");
 const aspectRatio = height / width;
 const mobile = aspectRatio > 1.6;
 
 const sortKeys = {
-  Name: ["track", "name"],
-  Artist: ["track", "artists", 0, "name"],
-  Album: ["track", "album", "name"],
-  "Added At": ["added_at"],
+  Artist: (a, b) => {
+    const A = a.track.artists[0].name.toLowerCase();
+    const B = b.track.artists[0].name.toLowerCase();
+
+    if (A > B) return 1;
+    if (A < B) return -1;
+
+    return sortKeys.Album(a, b);
+  },
+  Album: (a, b) => {
+    const A = a.track.album.name.toLowerCase();
+    const B = b.track.album.name.toLowerCase();
+
+    if (A > B) return 1;
+    if (A < B) return -1;
+
+    return sortKeys.Name(a, b);
+  },
+  Name: (a, b) => {
+    const A = a.track.name.toLowerCase();
+    const B = b.track.name.toLowerCase();
+
+    if (A > B) return 1;
+    if (A < B) return -1;
+
+    return sortKeys.Date(a, b);
+  },
+  Date: (a, b) => {
+    const A = new Date(a.added_at);
+    const B = new Date(b.added_at);
+
+    return A.getTime() - B.getTime();
+  },
 };
 
 export default function Playlist({
@@ -41,9 +70,10 @@ export default function Playlist({
   const [sortKey, setSortKey] = useState(
     localStorage.getItem("track-sort-key") || "Added At"
   );
-  const [sortOrder, setSortOrder] = useState(1);
+  const [reversed, setReversed] = useState(false);
 
   const [filter, setFilter] = useState("");
+
   const filteredTracks = useMemo(
     () =>
       tracks.filter(
@@ -72,43 +102,13 @@ export default function Playlist({
       );
     } else {
       setLoading(false);
-      setTracks(
-        tempList.sort((a, b) => {
-          sortKeys[sortKey].forEach((index) => {
-            a = a[index];
-            b = b[index];
-          });
-          if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
-          if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
-          return 0;
-        })
-      );
+
+      setTracks((prev) => {
+        if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
+        return tempList.sort((a, b) => sortKeys[sortKey](a, b));
+      });
     }
   }
-
-  useEffect(() => {
-    localStorage.setItem("track-sort-key", sortKey);
-    setTracks((prev) => {
-      const tempList = [...prev];
-      return tempList.sort((a, b) => {
-        sortKeys[sortKey].forEach((index) => {
-          console.log(a, b);
-          a = a[index];
-          b = b[index];
-        });
-        if (a.toLowerCase() > b.toLowerCase()) return sortOrder;
-        if (a.toLowerCase() < b.toLowerCase()) return -sortOrder;
-        return 0;
-      });
-    });
-  }, [sortKey]);
-
-  useEffect(() => {
-    setTracks((prev) => {
-      const next = [...prev];
-      return next.reverse();
-    });
-  }, [sortOrder]);
 
   useEffect(() => {
     navigation.setOptions({ title: "Spotify Helper - " + playlist.name });
@@ -126,6 +126,24 @@ export default function Playlist({
       );
     });
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("track-sort-key", sortKey);
+
+    setTracks((prev) => {
+      const tempList = [...prev];
+
+      if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
+      return tempList.sort((a, b) => sortKeys[sortKey](a, b));
+    });
+  }, [sortKey]);
+
+  useEffect(() => {
+    setTracks((prev) => {
+      const next = [...prev];
+      return next.reverse();
+    });
+  }, [reversed]);
 
   function addToQueue() {
     useToken((accessToken) => {
@@ -217,7 +235,7 @@ export default function Playlist({
     });
   }
 
-  function addToQueueStartingFromSong(index) {
+  function addToQueueStartingFromSong(song) {
     useToken((accessToken) => {
       request.get(
         {
@@ -310,6 +328,7 @@ export default function Playlist({
       );
     });
   }
+
   return (
     <View
       style={{
@@ -432,8 +451,8 @@ export default function Playlist({
               sortKey={sortKey}
               setSortKey={setSortKey}
               keys={sortKeys}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
+              reversed={reversed}
+              setReversed={setReversed}
             />
           </View>
           <View
@@ -546,8 +565,8 @@ export default function Playlist({
                   sortKey={sortKey}
                   setSortKey={setSortKey}
                   keys={sortKeys}
-                  sortOrder={sortOrder}
-                  setSortOrder={setSortOrder}
+                  reversed={reversed}
+                  setReversed={setReversed}
                 />
               </View>
             </View>

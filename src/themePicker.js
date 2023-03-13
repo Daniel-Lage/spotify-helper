@@ -3,13 +3,13 @@ import { useState } from "react";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { getThemes } from "../colors";
+import { getThemes } from "./colors";
 
 export default function ThemePicker({ size, theme, setTheme, colors }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <View style={{ position: "absolute", alignSelf: "flex-start" }}>
+    <View>
       <Pressable
         onPress={() => {
           setOpen((prev) => !prev);
@@ -19,18 +19,16 @@ export default function ThemePicker({ size, theme, setTheme, colors }) {
       </Pressable>
 
       <View
-        style={[
-          {
-            flexDirection: "row",
-            maxHeight: "10vh",
-            backgroundColor: colors.primary,
-            position: "absolute",
-            zIndex: -1,
-            borderRadius: 20,
-            transition: "top 400ms ease-in-out",
-            top: open ? "12vh" : 0,
-          },
-        ]}
+        style={{
+          flexDirection: "row",
+          maxHeight: "10vh",
+          backgroundColor: colors.primary,
+          position: "absolute",
+          zIndex: -1,
+          borderRadius: 20,
+          transition: "top 400ms ease-in-out",
+          top: open ? "12vh" : 0,
+        }}
       >
         {getThemes()
           .filter(([name, _]) => name != theme)

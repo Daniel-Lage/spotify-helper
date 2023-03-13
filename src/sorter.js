@@ -7,8 +7,8 @@ export default function Sorter({
   sortKey,
   setSortKey,
   keys,
-  sortOrder,
-  setSortOrder,
+  reversed,
+  setReversed,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -93,9 +93,9 @@ export default function Sorter({
       </View>
       <Pressable
         style={{ marginTop: "0.8vh" }}
-        onPress={() => setSortOrder((prev) => -prev)}
+        onPress={() => setReversed((prev) => !prev)}
       >
-        {sortOrder > 0 ? (
+        {reversed ? (
           <AntDesign name="up" size={"3vh"} color={colors.accents} />
         ) : (
           <AntDesign name="down" size={"3vh"} color={colors.accents} />

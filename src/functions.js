@@ -5,7 +5,7 @@ export function useToken(Function) {
     {
       url: "https://accounts.spotify.com/api/token",
       form: {
-        refresh_token: sessionStorage.getItem("refresh_token"),
+        refresh_token: localStorage.getItem("refresh_token"),
         grant_type: "refresh_token",
       },
       headers: {
@@ -16,6 +16,7 @@ export function useToken(Function) {
     },
     (error, response, body) => {
       console.log("request: get access token", body);
+      if (body.error) return;
       Function(body.access_token);
     }
   );

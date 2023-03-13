@@ -1,5 +1,5 @@
 import { Pressable, Text, Dimensions } from "react-native";
-import Cover from "../../components/cover";
+import Cover from "../cover";
 
 const { height, width } = Dimensions.get("window");
 const aspectRatio = height / width;

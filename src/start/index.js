@@ -29,11 +29,11 @@ export default function Start({ navigation, colors }) {
         (error, response, body) => {
           setLoading(false);
           if (body.error) return;
-          localStorage.setItem("refresh_token", body.refresh_token);
+          localStorage.refreshToken = body.refresh_token;
           navigation.navigate("Home");
         }
       );
-    }
+    } else setLoading(false);
   }, []);
 
   function login() {
@@ -67,7 +67,7 @@ export default function Start({ navigation, colors }) {
           <Text
             numberOfLines={2}
             style={{
-              fontSize: "3vh",
+              fontSize: 20,
               fontWeight: "bold",
               color: colors.secondary,
               textAlign: "center",
@@ -81,8 +81,8 @@ export default function Start({ navigation, colors }) {
             style={{
               position: "absolute",
               alignSelf: "flex-end",
-              width: "9vh",
-              height: "9vh",
+              width: 50,
+              height: 50,
             }}
           />
         </Header>

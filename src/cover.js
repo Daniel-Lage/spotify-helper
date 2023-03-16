@@ -14,8 +14,8 @@ export default function Cover({ colors, image, size, onPress }) {
       <Image
         source={image}
         style={{
-          width: `${size}vw`,
-          height: `${size}vw`,
+          width: size,
+          height: size,
         }}
       />
       <PlayButton
@@ -23,7 +23,7 @@ export default function Cover({ colors, image, size, onPress }) {
         onPress={onPress}
         symbol="play"
         style={{
-          margin: `${size / 6}vw`,
+          margin: size / 6,
           position: "absolute",
         }}
         size={size / 4}

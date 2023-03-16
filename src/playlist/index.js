@@ -17,10 +17,6 @@ import Header from "../header";
 import Track from "./track";
 import Sorter from "../sorter";
 
-const { height, width } = Dimensions.get("window");
-const aspectRatio = height / width;
-const mobile = aspectRatio > 1.6;
-
 const sortKeys = {
   Artist: (a, b) => {
     const A = a.track.artists[0].name.toLowerCase();
@@ -53,12 +49,13 @@ const sortKeys = {
     const A = new Date(a.added_at);
     const B = new Date(b.added_at);
 
-    return A.getTime() - B.getTime();
+    return B.getTime() - A.getTime();
   },
 };
 
 export default function Playlist({
   colors,
+  mobile,
   navigation,
   route: {
     params: { playlist },
@@ -67,9 +64,7 @@ export default function Playlist({
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [sortKey, setSortKey] = useState(
-    localStorage.getItem("track-sort-key") || "Added At"
-  );
+  const [sortKey, setSortKey] = useState(localStorage.trackSortKey || "Date");
   const [reversed, setReversed] = useState(false);
 
   const [filter, setFilter] = useState("");
@@ -128,7 +123,7 @@ export default function Playlist({
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("track-sort-key", sortKey);
+    localStorage.trackSortKey = sortKey;
 
     setTracks((prev) => {
       const tempList = [...prev];
@@ -342,13 +337,13 @@ export default function Playlist({
           onPress={() => navigation.navigate("Home")}
           style={{ position: "absolute", alignSelf: "flex-start" }}
         >
-          <AntDesign name="caretleft" size={"9vh"} color={colors.secondary} />
+          <AntDesign name="caretleft" size={50} color={colors.secondary} />
         </Pressable>
 
         <Text
           numberOfLines={2}
           style={{
-            fontSize: "3vh",
+            fontSize: 20,
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
@@ -362,8 +357,8 @@ export default function Playlist({
           style={{
             position: "absolute",
             alignSelf: "flex-end",
-            width: "9vh",
-            height: "9vh",
+            width: 50,
+            height: 50,
           }}
         />
       </Header>
@@ -381,8 +376,8 @@ export default function Playlist({
               backgroundColor: colors.dark_item,
               alignItems: "center",
               justifyContent: "center",
-              minHeight: "90vw",
-              paddingVertical: "5vw",
+              minHeight: 300,
+              paddingVertical: 20,
               width: "100%",
               shadowOpacity: 0.3,
               shadowRadius: 15,
@@ -392,12 +387,12 @@ export default function Playlist({
             <Cover
               image={playlist.images.length ? playlist.images[0].url : null}
               colors={colors}
-              size={50}
+              size={250}
             />
             <View
               style={{
-                marginTop: "1.5vh",
-                width: "80vw",
+                marginVertical: 10,
+                width: 250,
               }}
             >
               <Text
@@ -437,8 +432,8 @@ export default function Playlist({
               onChangeText={setFilter}
               placeholder="Search"
               style={{
-                height: "4vh",
-                width: "30vh",
+                height: 30,
+                width: 250,
                 color: colors.accents,
                 textAlign: "center",
                 borderRadius: 5,
@@ -457,9 +452,9 @@ export default function Playlist({
           </View>
           <View
             style={{
-              gap: "1vh",
+              gap: 10,
               width: "100%",
-              paddingVertical: "1vh",
+              paddingVertical: 10,
               alignItems: "center",
             }}
           >
@@ -490,9 +485,10 @@ export default function Playlist({
               backgroundColor: colors.dark_item,
               alignItems: "center",
               justifyContent: "center",
-              height: "50vh",
+              paddingVertical: 20,
               width: "100%",
               shadowOpacity: 0.3,
+              zIndex: 1,
               shadowRadius: 15,
             }}
           >
@@ -501,20 +497,19 @@ export default function Playlist({
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
-                gap: "1vh",
-                width: "80vw",
+                gap: 10,
               }}
             >
               <Cover
                 image={playlist.images.length ? playlist.images[0].url : null}
                 onPress={() => addToQueue()}
                 colors={colors}
-                size={24}
+                size={250}
               />
-              <View style={{ marginLeft: "1vw", gap: "1vh" }}>
+              <View style={{ marginLeft: 10, gap: 10 }}>
                 <Text
                   style={{
-                    fontSize: "5vh",
+                    fontSize: 50,
                     color: colors.accents,
                     fontWeight: "bold",
                   }}
@@ -523,7 +518,7 @@ export default function Playlist({
                 </Text>
                 <Text
                   style={{
-                    fontSize: "2vh",
+                    fontSize: 20,
                     color: colors.secondary,
                     fontWeight: "bold",
                   }}
@@ -532,7 +527,7 @@ export default function Playlist({
                 </Text>
                 <Text
                   style={{
-                    fontSize: "3vh",
+                    fontSize: 20,
                     color: colors.primary,
                   }}
                 >
@@ -540,7 +535,7 @@ export default function Playlist({
                 </Text>
                 <Text
                   style={{
-                    fontSize: "2vh",
+                    fontSize: 15,
                     color: colors.accents,
                   }}
                 >
@@ -551,8 +546,8 @@ export default function Playlist({
                   onChangeText={setFilter}
                   placeholder="Search"
                   style={{
-                    height: "4vh",
-                    width: "30vh",
+                    height: 30,
+                    width: 250,
                     color: colors.accents,
                     textAlign: "center",
                     borderRadius: 5,
@@ -573,9 +568,9 @@ export default function Playlist({
           </View>
           <View
             style={{
-              gap: "1vh",
+              gap: 10,
               width: "100%",
-              paddingVertical: "1vh",
+              paddingVertical: 10,
               alignItems: "center",
             }}
           >

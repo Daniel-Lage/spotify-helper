@@ -4,15 +4,14 @@ export default function Header({ colors, children }) {
   return (
     <View
       style={{
-        height: "10vh",
+        height: 60,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: colors.primary,
-        gap: "1vh",
-        width: "100vw",
-        paddingLeft: "2vw",
-        paddingRight: "2vw",
-        zIndex: 1,
+        gap: 10,
+        width: "100%",
+        paddingHorizontal: 10,
+        zIndex: 2,
         shadowOpacity: 0.3,
         shadowRadius: 15,
       }}

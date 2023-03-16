@@ -5,7 +5,7 @@ export function useToken(Function) {
     {
       url: "https://accounts.spotify.com/api/token",
       form: {
-        refresh_token: localStorage.getItem("refresh_token"),
+        refresh_token: localStorage.refreshToken,
         grant_type: "refresh_token",
       },
       headers: {

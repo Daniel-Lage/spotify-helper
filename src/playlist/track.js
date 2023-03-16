@@ -13,8 +13,8 @@ export default function Track({ track, index, onPress, colors, mobile }) {
     <Pressable
       style={{
         display: "grid",
-        gridTemplateColumns: "14vw auto auto",
-        width: "94vw",
+        gridTemplateColumns: "50px auto auto",
+        width: "90%",
         borderRadius: 5,
         backgroundColor: pressed ? colors.dark_item : colors.item,
         shadowOffset: {
@@ -38,14 +38,14 @@ export default function Track({ track, index, onPress, colors, mobile }) {
       <Image
         source={image?.url}
         style={{
-          width: "13vw",
-          height: "13vw",
+          width: 50,
+          height: 50,
         }}
       />
       <View
         style={{
           flexWrap: "wrap",
-          marginLeft: "1vw",
+          marginLeft: 10,
         }}
       >
         <Text
@@ -82,7 +82,7 @@ export default function Track({ track, index, onPress, colors, mobile }) {
     <Pressable
       style={{
         display: "grid",
-        width: "80vw",
+        width: "90%",
         borderRadius: 5,
         backgroundColor: pressed ? colors.dark_item : colors.item,
         shadowOffset: {
@@ -90,7 +90,7 @@ export default function Track({ track, index, onPress, colors, mobile }) {
           height: 5,
         },
         shadowOpacity: 0.3,
-        gridTemplateColumns: "4vw 30vw 30vw 12vw 4vw",
+        gridTemplateColumns: "50px 30% 30% 16% 16%",
         shadowRadius: 10,
       }}
       onPressIn={() => {
@@ -104,23 +104,25 @@ export default function Track({ track, index, onPress, colors, mobile }) {
       }}
       onPress={onPress}
     >
-      <Image
-        source={image?.url}
-        style={{
-          width: "4vw",
-          height: "4vw",
-        }}
-      />
+      <View style={{ backgroundColor: colors.dark_item, borderRadius: 5 }}>
+        <Image
+          source={image?.url}
+          style={{
+            width: 50,
+            height: 50,
+          }}
+        />
+      </View>
       <View
         style={{
           flexWrap: "wrap",
-          marginLeft: "1vw",
         }}
       >
         <Text
           style={{
             color: colors.primary,
             fontWeight: "bold",
+            marginLeft: 10,
           }}
         >
           {song.name}
@@ -129,6 +131,7 @@ export default function Track({ track, index, onPress, colors, mobile }) {
           style={{
             color: colors.secondary,
             fontWeight: "bold",
+            marginLeft: 10,
           }}
         >
           {song.artists.map(({ name }) => name).join(", ")}
@@ -138,6 +141,7 @@ export default function Track({ track, index, onPress, colors, mobile }) {
         style={{
           color: colors.secondary,
           fontWeight: "bold",
+          marginLeft: 10,
         }}
       >
         {song.album.name}
@@ -146,6 +150,7 @@ export default function Track({ track, index, onPress, colors, mobile }) {
         style={{
           color: colors.secondary,
           fontWeight: "bold",
+          marginLeft: 10,
         }}
       >
         {added_at.getDate() + 1}/{added_at.getMonth() + 1}/

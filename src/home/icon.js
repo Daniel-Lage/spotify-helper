@@ -1,9 +1,6 @@
 import { Pressable, Text, Dimensions } from "react-native";
 import Cover from "../cover";
 
-const { height, width } = Dimensions.get("window");
-const aspectRatio = height / width;
-
 export default function Icon({
   image,
   name,
@@ -11,8 +8,9 @@ export default function Icon({
   addToQueue,
   onPress,
   colors,
+  mobile,
 }) {
-  return aspectRatio > 1.6 ? (
+  return mobile ? (
     <Pressable
       style={{
         alignItems: "center",
@@ -27,11 +25,11 @@ export default function Icon({
       }}
       onPress={onPress}
     >
-      <Cover image={image} colors={colors} size={42} onPress={addToQueue} />
+      <Cover image={image} colors={colors} size={140} onPress={addToQueue} />
       <Text
         numberOfLines={1}
         style={{
-          width: "40vw",
+          width: 140,
           fontSize: 15,
           color: colors.primary,
           fontWeight: "bold",
@@ -43,7 +41,7 @@ export default function Icon({
       <Text
         numberOfLines={1}
         style={{
-          width: "40vw",
+          width: 140,
           fontSize: 15,
           color: colors.secondary,
           fontWeight: "bold",
@@ -69,11 +67,11 @@ export default function Icon({
       }}
       onPress={onPress}
     >
-      <Cover image={image} colors={colors} size={18} onPress={addToQueue} />
+      <Cover image={image} colors={colors} size={250} onPress={addToQueue} />
       <Text
         numberOfLines={1}
         style={{
-          width: "18vw",
+          width: 250,
           fontSize: 15,
           color: colors.primary,
           fontWeight: "bold",
@@ -85,7 +83,7 @@ export default function Icon({
       <Text
         numberOfLines={1}
         style={{
-          width: "18vw",
+          width: 250,
           fontSize: 15,
           color: colors.secondary,
           fontWeight: "bold",

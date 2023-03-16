@@ -11,7 +11,7 @@ const themes = {
   blue: theme("hsl(215, 80%, 60%)", "hsl(215, 60%, 40%)", "hsl(215, 50%, 80%)"),
   pink: theme("hsl(335, 80%, 60%)", "hsl(335, 60%, 40%)", "hsl(335, 50%, 80%)"),
   lime: theme("hsl(95, 80%, 60%)", "hsl(95, 60%, 40%)", "hsl(95, 50%, 80%)"),
-  mono: theme("hsl(0, 0%, 40%)", "hsl(0, 0%, 30%)", "hsl(0, 0%, 90%)"),
+  mono: theme("hsl(0, 0%, 60%)", "hsl(0, 0%, 40%)", "hsl(0, 0%, 100%)"),
 };
 
 export function getColors(theme) {

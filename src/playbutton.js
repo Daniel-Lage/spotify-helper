@@ -29,7 +29,7 @@ export default function PlayButton({ colors, onPress, style, size }) {
     >
       <AntDesign
         name="caretright"
-        size={`${(size * 3) / 5}vw`}
+        size={(size * 3) / 5}
         color={colors.background}
         style={{
           position: "absolute",
@@ -38,9 +38,9 @@ export default function PlayButton({ colors, onPress, style, size }) {
       />
       <View
         style={{
-          width: `${size}vw`,
-          height: `${size}vw`,
-          borderRadius: `${size}vw`,
+          width: size,
+          height: size,
+          borderRadius: size,
           shadowOffset: {
             width: 0,
             height: 5,

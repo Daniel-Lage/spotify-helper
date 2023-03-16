@@ -20,16 +20,17 @@ export default function Sorter({
       style={{
         flexDirection: "row",
         justifyContent: "center",
-        height: "4vh",
-        width: "30vh",
-        backgroundImage: `linear-gradient(transparent,${colors.item})`,
+        height: 30,
+        width: 250,
+        backgroundColor: colors.item,
         borderRadius: 5,
-        zIndex: 1,
+        borderBottomLeftRadius: open ? 0 : 5,
+        borderBottomRightRadius: open ? 0 : 5,
       }}
     >
       <Text
         style={{
-          fontSize: "3vh",
+          fontSize: 20,
           fontWeight: "bold",
           color: colors.accents,
           userSelect: "none",
@@ -38,9 +39,8 @@ export default function Sorter({
         Sort By:
         <Text
           style={{
-            fontSize: "2vh",
+            fontSize: 20,
             fontWeight: "bold",
-            padding: "0.5vh",
           }}
         >
           {sortKey}
@@ -50,13 +50,21 @@ export default function Sorter({
         style={{
           position: "absolute",
           width: "100%",
-          top: "4.5vh",
-          gap: "0.5vh",
+          top: 30,
+          gap: 3,
           alignItems: "center",
-          borderWidth: 2,
           borderColor: colors.background,
           borderRadius: 5,
+          borderTopLeftRadius: open ? 0 : 5,
+          borderTopRightRadius: open ? 0 : 5,
           backgroundColor: colors.item,
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.3,
+          shadowRadius: 10,
+          zIndex: 1,
         }}
       >
         {open &&
@@ -66,7 +74,7 @@ export default function Sorter({
                 <Text
                   key={name}
                   style={{
-                    fontSize: "2vh",
+                    fontSize: 15,
                     fontWeight: "bold",
                     color: colors.accents,
                   }}
@@ -80,7 +88,7 @@ export default function Sorter({
                 <Text
                   key={name}
                   style={{
-                    fontSize: "2vh",
+                    fontSize: 15,
                     fontWeight: "bold",
                     color: colors.primary,
                   }}
@@ -92,13 +100,13 @@ export default function Sorter({
           })}
       </View>
       <Pressable
-        style={{ marginTop: "0.8vh" }}
+        style={{ marginTop: 6 }}
         onPress={() => setReversed((prev) => !prev)}
       >
         {reversed ? (
-          <AntDesign name="up" size={"3vh"} color={colors.accents} />
+          <AntDesign name="up" size={20} color={colors.accents} />
         ) : (
-          <AntDesign name="down" size={"3vh"} color={colors.accents} />
+          <AntDesign name="down" size={20} color={colors.accents} />
         )}
       </Pressable>
     </Pressable>

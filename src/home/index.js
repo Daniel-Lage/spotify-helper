@@ -14,12 +14,8 @@ import { useToken } from "../functions";
 
 import Header from "../header";
 import Sorter from "../sorter";
-import ThemePicker from "../themePicker";
 import Icon from "./icon";
-
-const { height, width } = Dimensions.get("window");
-const aspectRatio = height / width;
-const mobile = aspectRatio > 1.6;
+import { getThemes } from "../colors";
 
 const sortKeys = {
   Author: (a, b) => {
@@ -48,12 +44,13 @@ const sortKeys = {
   },
 };
 
-export default function Home({ theme, setTheme, colors, navigation }) {
+export default function Home({ theme, setTheme, colors, navigation, mobile }) {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const [sortKey, setSortKey] = useState(
-    localStorage.getItem("playlist-sort-key") || "Name"
+    localStorage.playlistSortKey || "Name"
   );
   const [reversed, setReversed] = useState(false);
 
@@ -109,7 +106,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("playlist-sort-key", sortKey);
+    localStorage.playlistSortKey = sortKey;
     setPlaylists((prev) => {
       const tempList = [...prev];
 
@@ -242,7 +239,7 @@ export default function Home({ theme, setTheme, colors, navigation }) {
     <View
       style={{
         width: "100%",
-        minHeight: "100%",
+        height: "100%",
         alignItems: "center",
         backgroundColor: colors.background,
       }}
@@ -256,137 +253,208 @@ export default function Home({ theme, setTheme, colors, navigation }) {
             alignItems: "center",
           }}
         >
-          <Pressable
-            onPress={() => {
-              localStorage.removeItem("refresh_token");
-              navigation.navigate("Start");
-            }}
-          >
-            <AntDesign name="back" size={"9vh"} color={colors.secondary} />
-          </Pressable>
-          <ThemePicker
-            size={"9vh"}
-            theme={theme}
-            setTheme={setTheme}
-            colors={colors}
-          />
+          <View>
+            <Pressable
+              onPress={() => {
+                setOpen((prev) => !prev);
+              }}
+            >
+              {open ? (
+                <AntDesign name="up" size={60} color={colors.secondary} />
+              ) : (
+                <AntDesign name="down" size={60} color={colors.secondary} />
+              )}
+            </Pressable>
+
+            <View
+              style={{
+                flexDirection: "row",
+                height: 60,
+                paddingHorizontal: 5,
+                gap: 5,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: colors.primary,
+                position: "absolute",
+                zIndex: -1,
+                borderRadius: 20,
+                transition: "top 200ms ease-in-out",
+                top: open ? 70 : 0,
+              }}
+            >
+              <Pressable
+                disabled={!open}
+                onPress={() => {
+                  localStorage.removeItem("refresh_token");
+                  navigation.navigate("Start");
+                }}
+              >
+                <AntDesign
+                  name="back"
+                  size={50}
+                  color={colors.secondary}
+                  style={{
+                    transition: open
+                      ? "opacity 100ms linear 150ms"
+                      : "opacity 100ms linear 50ms",
+                    opacity: open ? 1 : 0,
+                  }}
+                />
+              </Pressable>
+              {getThemes()
+                .filter(([name, _]) => name != theme)
+                .map(([name, theme]) => (
+                  <Pressable
+                    disabled={!open}
+                    key={name}
+                    onPress={() => {
+                      if (open) setTheme(name);
+                    }}
+                    style={{
+                      transition: open
+                        ? "opacity 100ms linear 150ms"
+                        : "opacity 100ms linear 50ms",
+                      opacity: open ? 1 : 0,
+                      cursor: open ? "pointer" : "default",
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: 50,
+                        backgroundColor: theme.primary,
+                      }}
+                    />
+                  </Pressable>
+                ))}
+            </View>
+          </View>
         </View>
         <Image
           source={require("../../assets/icon.png")}
           style={{
             position: "absolute",
             alignSelf: "flex-end",
-            width: "9vh",
-            height: "9vh",
+            width: 50,
+            height: 50,
           }}
         />
         <Text
           style={{
-            fontSize: "3vh",
+            fontSize: 20,
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
             zIndex: 1,
-            marginHorizontal: "9vh",
+            marginHorizontal: 50,
           }}
         >
           Spotify Helper
         </Text>
       </Header>
+      {mobile ? (
+        <View
+          style={{
+            paddingVertical: 10,
+            width: "100%",
+            alignItems: "center",
+            backgroundColor: colors.secondary,
+            shadowOpacity: 0.3,
+            zIndex: 1,
+            shadowRadius: 15,
+          }}
+        >
+          <TextInput
+            value={filter}
+            onChangeText={setFilter}
+            placeholder="Search"
+            style={{
+              height: 30,
+              width: 250,
+              color: colors.accents,
+              textAlign: "center",
+              borderRadius: 5,
+              borderWidth: 2,
+              borderColor: colors.accents,
+            }}
+          />
+          <Sorter
+            colors={colors}
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            keys={sortKeys}
+            reversed={reversed}
+            setReversed={setReversed}
+          />
+        </View>
+      ) : (
+        <View
+          style={{
+            paddingVertical: 10,
+            width: "100%",
+            zIndex: 1,
+            gap: 10,
+            flexDirection: "row",
+            justifyContent: "center",
+            backgroundColor: colors.secondary,
+            shadowOpacity: 0.3,
+            shadowRadius: 15,
+          }}
+        >
+          <TextInput
+            value={filter}
+            onChangeText={setFilter}
+            placeholder="Search"
+            style={{
+              height: 30,
+              width: 250,
+              color: colors.accents,
+              textAlign: "center",
+              borderRadius: 5,
+              borderWidth: 2,
+              borderColor: colors.accents,
+            }}
+          />
+          <Sorter
+            colors={colors}
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            keys={sortKeys}
+            reversed={reversed}
+            setReversed={setReversed}
+          />
+        </View>
+      )}
       <View
         style={{
           width: "100%",
-          height: "90vh",
+          flex: 1,
+          flexWrap: "wrap",
+          flexDirection: "row",
           overflowY: "scroll",
-          alignItems: "center",
+          justifyContent: "center",
+          paddingVertical: 15,
+          gap: 15,
         }}
       >
-        {mobile ? (
-          <View style={{ marginTop: "1vh", zIndex: 1 }}>
-            <TextInput
-              value={filter}
-              onChangeText={setFilter}
-              placeholder="Search"
-              style={{
-                height: "4vh",
-                width: "30vh",
-                color: colors.accents,
-                textAlign: "center",
-                borderRadius: 5,
-                borderWidth: 2,
-                borderColor: colors.accents,
-              }}
-            />
-            <Sorter
+        {loading ||
+          filteredPlaylists.map((playlist) => (
+            <Icon
+              mobile={mobile}
               colors={colors}
-              sortKey={sortKey}
-              setSortKey={setSortKey}
-              keys={sortKeys}
-              reversed={reversed}
-              setReversed={setReversed}
+              key={playlist.id}
+              name={playlist.name}
+              author={playlist.owner.display_name}
+              image={playlist.images.length ? playlist.images[0].url : null}
+              addToQueue={() => addToQueue(playlist.tracks.href)}
+              onPress={() =>
+                navigation.navigate("Playlist", {
+                  playlist: playlist,
+                })
+              }
             />
-          </View>
-        ) : (
-          <View
-            style={{
-              width: "90%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: "1vh",
-              zIndex: 1,
-            }}
-          >
-            <TextInput
-              value={filter}
-              onChangeText={setFilter}
-              placeholder="Search"
-              style={{
-                height: "4vh",
-                width: "30vh",
-                color: colors.accents,
-                textAlign: "center",
-                borderRadius: 5,
-                borderWidth: 2,
-                borderColor: colors.accents,
-              }}
-            />
-            <Sorter
-              colors={colors}
-              sortKey={sortKey}
-              setSortKey={setSortKey}
-              keys={sortKeys}
-              reversed={reversed}
-              setReversed={setReversed}
-            />
-          </View>
-        )}
-        <View
-          style={{
-            width: "100%",
-            flexWrap: "wrap",
-            paddingVertical: "2vh",
-            flexDirection: "row",
-            justifyContent: "center",
-            gap: "2vh",
-          }}
-        >
-          {loading ||
-            filteredPlaylists.map((playlist) => (
-              <Icon
-                colors={colors}
-                key={playlist.id}
-                name={playlist.name}
-                author={playlist.owner.display_name}
-                image={playlist.images.length ? playlist.images[0].url : null}
-                addToQueue={() => addToQueue(playlist.tracks.href)}
-                onPress={() =>
-                  navigation.navigate("Playlist", {
-                    playlist: playlist,
-                  })
-                }
-              />
-            ))}
-        </View>
+          ))}
       </View>
     </View>
   );

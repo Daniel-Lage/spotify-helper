@@ -34,7 +34,7 @@ const sortKeys = {
     if (A > B) return 1;
     if (A < B) return -1;
 
-    return sortKeys.Name(a, b);
+    return b.track.disc_number - a.track.disc_number;
   },
   Name: (a, b) => {
     const A = a.track.name.toLowerCase();
@@ -139,6 +139,8 @@ export default function Playlist({
       return next.reverse();
     });
   }, [reversed]);
+
+  console.log(tracks);
 
   function addToQueue() {
     useToken((accessToken) => {
@@ -257,7 +259,10 @@ export default function Playlist({
           }
 
           const newTracks = [...tracks];
-          const first_track = newTracks.splice(index, 1)[0].track;
+          const first_track = newTracks.splice(
+            newTracks.findIndex((value) => value === song),
+            1
+          )[0].track;
 
           const shuffledTracks = get_shuffled_array(
             newTracks.map((value) => value.track)
@@ -464,7 +469,7 @@ export default function Playlist({
                   track={track}
                   key={index}
                   index={index}
-                  onPress={() => addToQueueStartingFromSong(index)}
+                  onPress={() => addToQueueStartingFromSong(track)}
                   colors={colors}
                   mobile={mobile}
                 />
@@ -580,7 +585,7 @@ export default function Playlist({
                   track={track}
                   key={index}
                   index={index}
-                  onPress={() => addToQueueStartingFromSong(index)}
+                  onPress={() => addToQueueStartingFromSong(track)}
                   colors={colors}
                   mobile={mobile}
                 />

@@ -28,7 +28,11 @@ export default function Start({ navigation, colors }) {
         },
         (error, response, body) => {
           setLoading(false);
-          if (body.error) return;
+
+          console.log("request: get refresh token");
+
+          if (body.error) return console.error(body);
+
           localStorage.refreshToken = body.refresh_token;
           navigation.navigate("Home");
         }

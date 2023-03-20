@@ -13,11 +13,7 @@ export default function PlayButton({ colors, onPress, style, size }) {
         setPressed(true);
         clearTimeout(timeout);
       }}
-      onPressOut={() => {
-        timeout = setTimeout(() => {
-          setPressed(false);
-        }, 150);
-      }}
+      onPressOut={() => (timeout = setTimeout(() => setPressed(false), 150))}
       onPress={onPress}
       style={[
         style,

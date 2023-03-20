@@ -27,11 +27,7 @@ export default function Track({ track, index, onPress, colors, vertical }) {
         setPressed(true);
         clearTimeout(timeout);
       }}
-      onPressOut={() => {
-        timeout = setTimeout(() => {
-          setPressed(false);
-        }, 150);
-      }}
+      onPressOut={() => (timeout = setTimeout(() => setPressed(false), 150))}
       onPress={onPress}
     >
       <Image
@@ -97,11 +93,7 @@ export default function Track({ track, index, onPress, colors, vertical }) {
         setPressed(true);
         clearTimeout(timeout);
       }}
-      onPressOut={() => {
-        timeout = setTimeout(() => {
-          setPressed(false);
-        }, 150);
-      }}
+      onPressOut={() => (timeout = setTimeout(() => setPressed(false), 150))}
       onPress={onPress}
     >
       <Image

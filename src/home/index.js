@@ -1,12 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Image, Pressable, Text, TextInput, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 import request from "request";
@@ -55,6 +48,8 @@ export default function Home({
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
+  const content = useRef();
+
   const [sortKey, setSortKey] = useState(
     localStorage.playlistSortKey || "Name"
   );
@@ -72,32 +67,44 @@ export default function Home({
     [playlists, filter]
   );
 
-  function appendPlaylists(body, accessToken, tempList) {
-    tempList = [...tempList, ...body.items];
+  function appendPlaylists(next, items, accessToken, tempList) {
+    tempList = [...tempList, ...items];
 
-    if (body.next) {
+    if (next) {
       request.get(
         {
-          url: body.next,
+          url: next,
           headers: { Authorization: "Bearer " + accessToken },
           json: true,
         },
         (error, response, body) => {
-          appendPlaylists(body, accessToken, tempList);
+          console.log(
+            "request: get playlists",
+            body.next
+              ? `[${body.offset}:${body.offset + body.limit}]`
+              : `[${body.offset}:${body.total}]`
+          );
+
+          appendPlaylists(body.next, body.items, accessToken, tempList);
         }
       );
     } else {
       setLoading(false);
 
-      setPlaylists((prev) => {
-        if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
-        return tempList.sort((a, b) => sortKeys[sortKey](a, b));
-      });
+      setPlaylists((prev) =>
+        reversed
+          ? tempList.sort((a, b) => sortKeys[sortKey](b, a))
+          : tempList.sort((a, b) => sortKeys[sortKey](a, b))
+      );
     }
   }
 
   useEffect(() => {
-    useToken((accessToken) => {
+    window.addEventListener("click", (e) =>
+      setOpen(content.current?.contains(e.target))
+    );
+
+    useToken((accessToken) =>
       request.get(
         {
           url: "https://api.spotify.com/v1/me/playlists",
@@ -105,27 +112,30 @@ export default function Home({
           json: true,
         },
         (error, response, body) => {
-          appendPlaylists(body, accessToken, []);
+          console.log(
+            "request: get playlists",
+            body.next
+              ? `[${body.offset}:${body.offset + body.limit}]`
+              : `[${body.offset}:${body.total}]`
+          );
+
+          appendPlaylists(body.next, body.items, accessToken, []);
         }
-      );
-    });
+      )
+    );
   }, []);
 
   useEffect(() => {
     localStorage.playlistSortKey = sortKey;
-    setPlaylists((prev) => {
-      const tempList = [...prev];
-
-      if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
-      return tempList.sort((a, b) => sortKeys[sortKey](a, b));
-    });
+    setPlaylists((prev) =>
+      reversed
+        ? [...prev].sort((a, b) => sortKeys[sortKey](b, a))
+        : [...prev].sort((a, b) => sortKeys[sortKey](a, b))
+    );
   }, [sortKey]);
 
   useEffect(() => {
-    setPlaylists((prev) => {
-      const next = [...prev];
-      return next.reverse();
-    });
+    setPlaylists((prev) => [...prev].reverse());
   }, [reversed]);
 
   function appendTracks(body, accessToken, tracks, deviceID) {
@@ -138,9 +148,8 @@ export default function Home({
           headers: { Authorization: "Bearer " + accessToken },
           json: true,
         },
-        (error, response, body) => {
-          appendTracks(body, accessToken, tracks, deviceID);
-        }
+        (error, response, body) =>
+          appendTracks(body, accessToken, tracks, deviceID)
       );
     } else {
       function getShuffledArray(array) {
@@ -166,13 +175,14 @@ export default function Home({
           json: true,
         },
         (error, response, body) => {
-          if (body) {
-            console.log("request: add first track to queue", body);
-            return;
-          }
+          console.log("request: add first track to queue");
+
+          if (body) return console.error(body);
+
           const query = new URLSearchParams({
             device_id: deviceID,
           });
+
           request.post(
             {
               url:
@@ -183,15 +193,16 @@ export default function Home({
               json: true,
             },
             (error, response, body) => {
-              if (body) {
-                console.log("request: skip track", body);
-                return;
-              }
+              console.log("request: skip track");
+
+              if (body) return console.error(body);
+
               tracks.forEach((track) => {
                 const query = new URLSearchParams({
                   uri: track.track.uri,
                   device_id: deviceID,
                 });
+
                 request.post({
                   url:
                     "https://api.spotify.com/v1/me/player/queue?" +
@@ -210,7 +221,7 @@ export default function Home({
   }
 
   function addToQueue(href) {
-    useToken((accessToken) => {
+    useToken((accessToken) =>
       request.get(
         {
           url: "https://api.spotify.com/v1/me/player",
@@ -224,6 +235,7 @@ export default function Home({
             );
             return;
           }
+
           const deviceID = body.device.id;
 
           request.get(
@@ -232,13 +244,12 @@ export default function Home({
               headers: { Authorization: "Bearer " + accessToken },
               json: true,
             },
-            (error, response, body) => {
-              appendTracks(body, accessToken, [], deviceID);
-            }
+            (error, response, body) =>
+              appendTracks(body, accessToken, [], deviceID)
           );
         }
-      );
-    });
+      )
+    );
   }
 
   return (
@@ -251,24 +262,15 @@ export default function Home({
       }}
     >
       <Header colors={colors}>
-        <View
+        <Pressable
           style={{
             position: "absolute",
             alignSelf: "flex-start",
-            flexDirection: "row",
-            alignItems: "center",
           }}
+          onPress={() => setOpen((prev) => !prev)}
         >
-          <View>
-            <Pressable
-              onPress={() => {
-                setOpen((prev) => !prev);
-              }}
-            >
-              <AntDesign name="ellipsis1" size={60} color={colors.secondary} />
-            </Pressable>
-          </View>
-        </View>
+          <AntDesign name="ellipsis1" size={60} color={colors.secondary} />
+        </Pressable>
         <Image
           source={require("../../assets/icon.png")}
           style={{
@@ -292,6 +294,7 @@ export default function Home({
         </Text>
       </Header>
       <View
+        ref={content}
         style={{
           position: "fixed",
           overflow: "hidden",
@@ -339,11 +342,8 @@ export default function Home({
           .filter(([name, _]) => name != theme)
           .map(([name, theme]) => (
             <Pressable
-              disabled={!open}
               key={name}
-              onPress={() => {
-                if (open) setTheme(name);
-              }}
+              onPress={() => setTheme(name)}
               style={{
                 transition: open
                   ? "opacity 100ms linear 150ms"

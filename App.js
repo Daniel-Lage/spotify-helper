@@ -11,9 +11,7 @@ import Start from "./src/start";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  onresize = () => {
-    setVertical(isVertical());
-  };
+  onresize = () => setVertical(isVertical());
 
   const localtheme = localStorage.theme;
 
@@ -37,15 +35,12 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen
-          name="Start"
-          options={{ title: "Spotify Helper - Start" }}
-        >
+        <Stack.Screen name="Start" options={{ title: "Spotify Helper" }}>
           {({ navigation }) => (
             <Start colors={colors} navigation={navigation} />
           )}
         </Stack.Screen>
-        <Stack.Screen name="Home" options={{ title: "Spotify Helper - Home" }}>
+        <Stack.Screen name="Home" options={{ title: "Spotify Helper" }}>
           {({ navigation }) => (
             <Home
               theme={theme}
@@ -58,7 +53,7 @@ export default function App() {
         </Stack.Screen>
         <Stack.Screen
           name="Playlist"
-          options={{ title: "Spotify Helper - Playlist" }}
+          options={{ title: "Spotify Helper" }}
           initialParams={{
             playlist: {
               collaborative: false,

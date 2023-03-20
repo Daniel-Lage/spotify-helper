@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Sorter({
   colors,
@@ -10,27 +10,28 @@ export default function Sorter({
   reversed,
   setReversed,
 }) {
+  useEffect(() => {
+    window.addEventListener("click", (e) =>
+      setOpen(content.current?.contains(e.target))
+    );
+  }, []);
+
   const [open, setOpen] = useState(false);
 
   const content = useRef();
 
-  console.log(content);
-
   return (
     <View>
       <Pressable
-        onPress={() => {
-          setOpen((prev) => !prev);
-        }}
-        onBlur={() => {
-          console.log("not focused");
-        }}
+        onPress={() => setOpen((prev) => !prev)}
         style={{
           flexDirection: "row",
           justifyContent: "center",
-          height: 25,
+          height: 30,
           width: 250,
           backgroundColor: colors.item,
+          borderRadius: open ? 0 : 5,
+          transition: open || "border-radius 0ms linear 200ms",
           borderTopLeftRadius: 5,
           borderTopRightRadius: 5,
           zIndex: 2,
@@ -56,7 +57,7 @@ export default function Sorter({
         </Text>
 
         <Pressable
-          style={{ marginTop: 5 }}
+          style={{ marginTop: 6 }}
           onPress={() => setReversed((prev) => !prev)}
         >
           {reversed ? (
@@ -72,7 +73,7 @@ export default function Sorter({
           position: "absolute",
           overflow: "hidden",
           alignItems: "center",
-          top: 25,
+          top: 30,
           width: 250,
           borderColor: colors.background,
           borderBottomLeftRadius: 5,
@@ -86,40 +87,22 @@ export default function Sorter({
           shadowRadius: 10,
           zIndex: 1,
           height: open ? content.current.scrollHeight : 0,
-          paddingBottom: 5,
           transition: "height 200ms ease-in-out",
         }}
       >
-        {Object.keys(keys).map((name) => {
-          if (name === sortKey)
-            return (
-              <Text
-                key={name}
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  color: colors.accents,
-                }}
-              >
-                {name}
-              </Text>
-            );
-
-          return (
-            <Pressable onPress={() => setSortKey(name)} key={name}>
-              <Text
-                key={name}
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  color: colors.primary,
-                }}
-              >
-                {name}
-              </Text>
-            </Pressable>
-          );
-        })}
+        {Object.keys(keys).map((name, index, array) => (
+          <Text
+            key={name}
+            style={{
+              fontSize: 15,
+              fontWeight: "bold",
+              color: name === sortKey ? colors.accents : colors.primary,
+              marginBottom: index === array.length - 1 ? 5 : 0,
+            }}
+          >
+            {name}
+          </Text>
+        ))}
       </View>
     </View>
   );

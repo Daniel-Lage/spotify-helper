@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Dimensions,
+  ActivityIndicator,
   Image,
   Pressable,
   Text,
@@ -62,7 +62,7 @@ export default function Playlist({
   },
 }) {
   const [tracks, setTracks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [sortKey, setSortKey] = useState(localStorage.trackSortKey || "Date");
   const [reversed, setReversed] = useState(false);
@@ -82,32 +82,44 @@ export default function Playlist({
     [tracks, filter]
   );
 
-  function appendTracks(body, accessToken, tempList) {
-    tempList = [...tempList, ...body.items];
-    if (body.next) {
+  function appendTracks(next, items, accessToken, tempList) {
+    tempList = [...tempList, ...items];
+
+    if (next) {
       request.get(
         {
-          url: body.next,
+          url: next,
           headers: { Authorization: "Bearer " + accessToken },
           json: true,
         },
         (error, response, body) => {
-          appendTracks(body, accessToken, tempList);
+          console.log(
+            "request: get tracks",
+            body.next
+              ? `[${body.offset}:${body.offset + body.limit}]`
+              : `[${body.offset}:${body.total}]`
+          );
+
+          appendTracks(body.next, body.items, accessToken, tempList);
         }
       );
     } else {
       setLoading(false);
 
-      setTracks((prev) => {
-        if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
-        return tempList.sort((a, b) => sortKeys[sortKey](a, b));
-      });
+      tempList = tempList.filter((value) => value.track);
+
+      setTracks((prev) =>
+        reversed
+          ? tempList.sort((a, b) => sortKeys[sortKey](b, a))
+          : tempList.sort((a, b) => sortKeys[sortKey](a, b))
+      );
     }
   }
 
   useEffect(() => {
-    navigation.setOptions({ title: "Spotify Helper - " + playlist.name });
-    useToken((accessToken) => {
+    navigation.setOptions({ title: playlist.name + " - Spotify Helper - " });
+
+    useToken((accessToken) =>
       request.get(
         {
           url: playlist.tracks.href,
@@ -115,32 +127,32 @@ export default function Playlist({
           json: true,
         },
         (error, response, body) => {
-          console.log("request: get initial tracks (1:100)", body);
-          appendTracks(body, accessToken, []);
+          console.log(
+            "request: get tracks",
+            body.next
+              ? `[${body.offset}:${body.offset + body.limit}]`
+              : `[${body.offset}:${body.total}]`
+          );
+
+          appendTracks(body.next, body.items, accessToken, []);
         }
-      );
-    });
+      )
+    );
   }, []);
 
   useEffect(() => {
     localStorage.trackSortKey = sortKey;
 
-    setTracks((prev) => {
-      const tempList = [...prev];
-
-      if (reversed) return tempList.sort((a, b) => sortKeys[sortKey](b, a));
-      return tempList.sort((a, b) => sortKeys[sortKey](a, b));
-    });
+    setTracks((prev) =>
+      reversed
+        ? [...prev].sort((a, b) => sortKeys[sortKey](b, a))
+        : [...prev].sort((a, b) => sortKeys[sortKey](a, b))
+    );
   }, [sortKey]);
 
   useEffect(() => {
-    setTracks((prev) => {
-      const next = [...prev];
-      return next.reverse();
-    });
+    setTracks((prev) => [...prev].reverse());
   }, [reversed]);
-
-  console.log(tracks);
 
   function addToQueue() {
     useToken((accessToken) => {
@@ -151,12 +163,15 @@ export default function Playlist({
           json: true,
         },
         (error, response, body) => {
+          console.log("request: get device id");
+
           if (!body) {
             alert(
               "spotify não esta aberto (toque uma musica para ativar o dispositivo)"
             );
             return;
           }
+
           const device_id = body.device.id;
 
           function get_shuffled_array(array) {
@@ -186,13 +201,14 @@ export default function Playlist({
               json: true,
             },
             (error, response, body) => {
-              if (body) {
-                console.log("request: add first track to queue", body);
-                return;
-              }
+              console.log("request: add first track to queue");
+
+              if (body) return console.error(body);
+
               const query = new URLSearchParams({
                 device_id: device_id,
               });
+
               request.post(
                 {
                   url:
@@ -204,15 +220,16 @@ export default function Playlist({
                   json: true,
                 },
                 (error, response, body) => {
-                  if (body) {
-                    console.log("request: skip track", body);
-                    return;
-                  }
+                  console.log("request: skip track");
+
+                  if (body) return console.error(body);
+
                   shuffledTracks.forEach((track) => {
                     const query = new URLSearchParams({
                       uri: track.uri,
                       device_id: device_id,
                     });
+
                     request.post({
                       url:
                         "https://api.spotify.com/v1/me/player/queue?" +
@@ -233,7 +250,7 @@ export default function Playlist({
   }
 
   function addToQueueStartingFromTrack(track) {
-    useToken((accessToken) => {
+    useToken((accessToken) =>
       request.get(
         {
           url: "https://api.spotify.com/v1/me/player",
@@ -241,12 +258,15 @@ export default function Playlist({
           json: true,
         },
         (error, response, body) => {
+          console.log("request: get device id");
+
           if (!body) {
             alert(
               "spotify não esta aberto (toque uma musica para ativar o dispositivo)"
             );
             return;
           }
+
           const device_id = body.device.id;
 
           function get_shuffled_array(array) {
@@ -284,13 +304,14 @@ export default function Playlist({
               json: true,
             },
             (error, response, body) => {
-              if (body) {
-                console.log("request: add first track to queue", body);
-                return;
-              }
+              console.log("request: add first track to queue");
+
+              if (body) return console.error(body);
+
               const query = new URLSearchParams({
                 device_id: device_id,
               });
+
               request.post(
                 {
                   url:
@@ -302,15 +323,16 @@ export default function Playlist({
                   json: true,
                 },
                 (error, response, body) => {
-                  if (body) {
-                    console.log("request: skip track", body);
-                    return;
-                  }
+                  console.log("request: skip track");
+
+                  if (body) return console.error(body);
+
                   shuffledTracks.forEach((track) => {
                     const query = new URLSearchParams({
                       uri: track.uri,
                       device_id: device_id,
                     });
+
                     request.post({
                       url:
                         "https://api.spotify.com/v1/me/player/queue?" +
@@ -326,8 +348,8 @@ export default function Playlist({
             }
           );
         }
-      );
-    });
+      )
+    );
   }
 
   return (
@@ -430,7 +452,11 @@ export default function Playlist({
                   color: colors.accents,
                 }}
               >
-                {playlist.tracks.total} songs
+                {loading ? (
+                  <ActivityIndicator size="small" color={colors.primary} />
+                ) : (
+                  tracks.length + " songs"
+                )}
               </Text>
             </View>
             <TextInput
@@ -464,7 +490,9 @@ export default function Playlist({
               alignItems: "center",
             }}
           >
-            {loading ||
+            {loading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
               filteredTracks.map((track, index) => (
                 <Track
                   track={track}
@@ -474,7 +502,8 @@ export default function Playlist({
                   colors={colors}
                   vertical={vertical}
                 />
-              ))}
+              ))
+            )}
           </View>
         </View>
       ) : (
@@ -545,7 +574,11 @@ export default function Playlist({
                     color: colors.accents,
                   }}
                 >
-                  {playlist.tracks.total} songs
+                  {loading ? (
+                    <ActivityIndicator size="small" color={colors.primary} />
+                  ) : (
+                    tracks.length + " songs"
+                  )}
                 </Text>
                 <TextInput
                   value={filter}
@@ -580,7 +613,9 @@ export default function Playlist({
               alignItems: "center",
             }}
           >
-            {loading ||
+            {loading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
               filteredTracks.map((track, index) => (
                 <Track
                   track={track}
@@ -590,7 +625,8 @@ export default function Playlist({
                   colors={colors}
                   vertical={vertical}
                 />
-              ))}
+              ))
+            )}
           </View>
         </View>
       )}

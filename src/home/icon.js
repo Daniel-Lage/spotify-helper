@@ -8,9 +8,9 @@ export default function Icon({
   addToQueue,
   onPress,
   colors,
-  mobile,
+  vertical,
 }) {
-  return mobile ? (
+  return vertical ? (
     <Pressable
       style={{
         alignItems: "center",

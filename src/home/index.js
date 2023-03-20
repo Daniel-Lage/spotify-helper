@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -44,7 +44,13 @@ const sortKeys = {
   },
 };
 
-export default function Home({ theme, setTheme, colors, navigation, mobile }) {
+export default function Home({
+  theme,
+  setTheme,
+  colors,
+  navigation,
+  vertical,
+}) {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -259,76 +265,8 @@ export default function Home({ theme, setTheme, colors, navigation, mobile }) {
                 setOpen((prev) => !prev);
               }}
             >
-              {open ? (
-                <AntDesign name="up" size={60} color={colors.secondary} />
-              ) : (
-                <AntDesign name="down" size={60} color={colors.secondary} />
-              )}
+              <AntDesign name="ellipsis1" size={60} color={colors.secondary} />
             </Pressable>
-
-            <View
-              style={{
-                flexDirection: "row",
-                height: 60,
-                paddingHorizontal: 5,
-                gap: 5,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: colors.primary,
-                position: "absolute",
-                zIndex: -1,
-                borderRadius: 20,
-                transition: "top 200ms ease-in-out",
-                top: open ? 70 : 0,
-              }}
-            >
-              <Pressable
-                disabled={!open}
-                onPress={() => {
-                  localStorage.removeItem("refresh_token");
-                  navigation.navigate("Start");
-                }}
-              >
-                <AntDesign
-                  name="back"
-                  size={50}
-                  color={colors.secondary}
-                  style={{
-                    transition: open
-                      ? "opacity 100ms linear 150ms"
-                      : "opacity 100ms linear 50ms",
-                    opacity: open ? 1 : 0,
-                  }}
-                />
-              </Pressable>
-              {getThemes()
-                .filter(([name, _]) => name != theme)
-                .map(([name, theme]) => (
-                  <Pressable
-                    disabled={!open}
-                    key={name}
-                    onPress={() => {
-                      if (open) setTheme(name);
-                    }}
-                    style={{
-                      transition: open
-                        ? "opacity 100ms linear 150ms"
-                        : "opacity 100ms linear 50ms",
-                      opacity: open ? 1 : 0,
-                      cursor: open ? "pointer" : "default",
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: 50,
-                        backgroundColor: theme.primary,
-                      }}
-                    />
-                  </Pressable>
-                ))}
-            </View>
           </View>
         </View>
         <Image
@@ -353,7 +291,79 @@ export default function Home({ theme, setTheme, colors, navigation, mobile }) {
           Spotify Helper
         </Text>
       </Header>
-      {mobile ? (
+      <View
+        style={{
+          position: "fixed",
+          overflow: "hidden",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "row",
+          height: open ? 70 : 0,
+          transition: "height 200ms ease-in-out",
+          paddingHorizontal: 10,
+          gap: 5,
+          backgroundColor: colors.primary,
+          borderBottomLeftRadius: 10,
+          borderBottomRightRadius: 10,
+          top: 60,
+          left: 0,
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.3,
+          shadowRadius: 10,
+          zIndex: 2,
+        }}
+      >
+        <Pressable
+          disabled={!open}
+          onPress={() => {
+            localStorage.removeItem("refresh_token");
+            navigation.navigate("Start");
+          }}
+        >
+          <AntDesign
+            name="back"
+            size={50}
+            color={colors.secondary}
+            style={{
+              transition: open
+                ? "opacity 100ms linear 150ms"
+                : "opacity 100ms linear 50ms",
+              opacity: open ? 1 : 0,
+            }}
+          />
+        </Pressable>
+        {getThemes()
+          .filter(([name, _]) => name != theme)
+          .map(([name, theme]) => (
+            <Pressable
+              disabled={!open}
+              key={name}
+              onPress={() => {
+                if (open) setTheme(name);
+              }}
+              style={{
+                transition: open
+                  ? "opacity 100ms linear 150ms"
+                  : "opacity 100ms linear 50ms",
+                opacity: open ? 1 : 0,
+                cursor: open ? "pointer" : "default",
+              }}
+            >
+              <View
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 50,
+                  backgroundColor: theme.primary,
+                }}
+              />
+            </Pressable>
+          ))}
+      </View>
+      {vertical ? (
         <View
           style={{
             paddingVertical: 10,
@@ -441,7 +451,7 @@ export default function Home({ theme, setTheme, colors, navigation, mobile }) {
         {loading ||
           filteredPlaylists.map((playlist) => (
             <Icon
-              mobile={mobile}
+              vertical={vertical}
               colors={colors}
               key={playlist.id}
               name={playlist.name}

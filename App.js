@@ -1,21 +1,23 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
-import { Dimensions } from "react-native";
 
 import { getColors, getThemes } from "./src/colors";
+import { isVertical } from "./src/functions";
 import Home from "./src/home";
 import Playlist from "./src/playlist";
 import Start from "./src/start";
 
 const Stack = createNativeStackNavigator();
 
-const { height, width } = Dimensions.get("window");
-const aspectRatio = height / width;
-const mobile = aspectRatio > 1.6;
-
 export default function App() {
+  onresize = () => {
+    setVertical(isVertical());
+  };
+
   const localtheme = localStorage.theme;
+
+  const [vertical, setVertical] = useState(isVertical());
 
   const [theme, setTheme] = useState(
     getThemes().some(([name, _]) => name === localtheme) ? localtheme : "blue"
@@ -50,7 +52,7 @@ export default function App() {
               setTheme={setTheme}
               colors={colors}
               navigation={navigation}
-              mobile={mobile}
+              vertical={vertical}
             />
           )}
         </Stack.Screen>
@@ -103,7 +105,7 @@ export default function App() {
               colors={colors}
               navigation={navigation}
               route={route}
-              mobile={mobile}
+              vertical={vertical}
             />
           )}
         </Stack.Screen>

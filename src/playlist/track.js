@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 
-export default function Track({ track, index, onPress, colors, mobile }) {
+export default function Track({ track, index, onPress, colors, vertical }) {
   const [pressed, setPressed] = useState(false);
   var timeout;
 
@@ -9,7 +9,7 @@ export default function Track({ track, index, onPress, colors, mobile }) {
   const image = song.album.images[0];
   const added_at = new Date(track.added_at);
 
-  return mobile ? (
+  return vertical ? (
     <Pressable
       style={{
         width: "90%",

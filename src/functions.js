@@ -1,3 +1,4 @@
+import { Dimensions } from "react-native";
 import request from "request";
 
 export function useToken(Function) {
@@ -20,4 +21,9 @@ export function useToken(Function) {
       Function(body.access_token);
     }
   );
+}
+
+export function isVertical() {
+  const { height, width } = Dimensions.get("window");
+  return height > width;
 }

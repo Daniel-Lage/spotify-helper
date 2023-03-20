@@ -55,7 +55,7 @@ const sortKeys = {
 
 export default function Playlist({
   colors,
-  mobile,
+  vertical,
   navigation,
   route: {
     params: { playlist },
@@ -368,7 +368,7 @@ export default function Playlist({
           }}
         />
       </Header>
-      {mobile ? (
+      {vertical ? (
         <View
           style={{
             width: "100%",
@@ -472,7 +472,7 @@ export default function Playlist({
                   index={index}
                   onPress={() => addToQueueStartingFromTrack(track)}
                   colors={colors}
-                  mobile={mobile}
+                  vertical={vertical}
                 />
               ))}
           </View>
@@ -588,7 +588,7 @@ export default function Playlist({
                   index={index}
                   onPress={() => addToQueueStartingFromTrack(track)}
                   colors={colors}
-                  mobile={mobile}
+                  vertical={vertical}
                 />
               ))}
           </View>

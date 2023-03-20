@@ -11,7 +11,7 @@ export default function Header({ colors, children }) {
         gap: 10,
         width: "100%",
         paddingHorizontal: 10,
-        zIndex: 2,
+        zIndex: 3,
         shadowOpacity: 0.3,
         shadowRadius: 15,
       }}

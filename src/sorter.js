@@ -22,17 +22,15 @@ export default function Sorter({
         onPress={() => {
           setOpen((prev) => !prev);
         }}
-        onTouchEnd={() => {
-          console.log("touchend?");
+        onBlur={() => {
+          console.log("not focused");
         }}
         style={{
           flexDirection: "row",
           justifyContent: "center",
-          height: 30,
+          height: 25,
           width: 250,
           backgroundColor: colors.item,
-          borderRadius: open ? 0 : 5,
-          transition: open || "border-radius 0ms linear 200ms",
           borderTopLeftRadius: 5,
           borderTopRightRadius: 5,
           zIndex: 2,
@@ -58,7 +56,7 @@ export default function Sorter({
         </Text>
 
         <Pressable
-          style={{ marginTop: 6 }}
+          style={{ marginTop: 5 }}
           onPress={() => setReversed((prev) => !prev)}
         >
           {reversed ? (
@@ -74,7 +72,7 @@ export default function Sorter({
           position: "absolute",
           overflow: "hidden",
           alignItems: "center",
-          top: 30,
+          top: 25,
           width: 250,
           borderColor: colors.background,
           borderBottomLeftRadius: 5,
@@ -87,7 +85,8 @@ export default function Sorter({
           shadowOpacity: 0.3,
           shadowRadius: 10,
           zIndex: 1,
-          height: open ? content.current.scrollHeight + 5 : 0,
+          height: open ? content.current.scrollHeight : 0,
+          paddingBottom: 5,
           transition: "height 200ms ease-in-out",
         }}
       >

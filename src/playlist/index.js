@@ -232,7 +232,7 @@ export default function Playlist({
     });
   }
 
-  function addToQueueStartingFromSong(song) {
+  function addToQueueStartingFromTrack(track) {
     useToken((accessToken) => {
       request.get(
         {
@@ -251,6 +251,7 @@ export default function Playlist({
 
           function get_shuffled_array(array) {
             const newArray = [];
+
             while (array.length) {
               const index = Math.floor(Math.random() * array.length);
               newArray.push(array.splice(index, 1)[0]);
@@ -260,7 +261,7 @@ export default function Playlist({
 
           const newTracks = [...tracks];
           const first_track = newTracks.splice(
-            newTracks.findIndex((value) => value === song),
+            newTracks.findIndex((value) => value === track),
             1
           )[0].track;
 
@@ -469,7 +470,7 @@ export default function Playlist({
                   track={track}
                   key={index}
                   index={index}
-                  onPress={() => addToQueueStartingFromSong(track)}
+                  onPress={() => addToQueueStartingFromTrack(track)}
                   colors={colors}
                   mobile={mobile}
                 />
@@ -585,7 +586,7 @@ export default function Playlist({
                   track={track}
                   key={index}
                   index={index}
-                  onPress={() => addToQueueStartingFromSong(track)}
+                  onPress={() => addToQueueStartingFromTrack(track)}
                   colors={colors}
                   mobile={mobile}
                 />

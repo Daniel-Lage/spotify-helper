@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function Sorter({
   colors,
@@ -12,51 +12,73 @@ export default function Sorter({
 }) {
   const [open, setOpen] = useState(false);
 
+  const content = useRef();
+
+  console.log(content);
+
   return (
-    <Pressable
-      onPress={() => {
-        setOpen((prev) => !prev);
-      }}
-      style={{
-        flexDirection: "row",
-        justifyContent: "center",
-        height: 30,
-        width: 250,
-        backgroundColor: colors.item,
-        borderRadius: 5,
-        borderBottomLeftRadius: open ? 0 : 5,
-        borderBottomRightRadius: open ? 0 : 5,
-      }}
-    >
-      <Text
+    <View>
+      <Pressable
+        onPress={() => {
+          setOpen((prev) => !prev);
+        }}
+        onTouchEnd={() => {
+          console.log("touchend?");
+        }}
         style={{
-          fontSize: 20,
-          fontWeight: "bold",
-          color: colors.accents,
-          userSelect: "none",
+          flexDirection: "row",
+          justifyContent: "center",
+          height: 30,
+          width: 250,
+          backgroundColor: colors.item,
+          borderRadius: open ? 0 : 5,
+          transition: open || "border-radius 0ms linear 200ms",
+          borderTopLeftRadius: 5,
+          borderTopRightRadius: 5,
+          zIndex: 2,
         }}
       >
-        Sort By:
         <Text
           style={{
             fontSize: 20,
             fontWeight: "bold",
+            color: colors.accents,
+            userSelect: "none",
           }}
         >
-          {sortKey}
+          Sort By:
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            {sortKey}
+          </Text>
         </Text>
-      </Text>
+
+        <Pressable
+          style={{ marginTop: 6 }}
+          onPress={() => setReversed((prev) => !prev)}
+        >
+          {reversed ? (
+            <AntDesign name="up" size={20} color={colors.accents} />
+          ) : (
+            <AntDesign name="down" size={20} color={colors.accents} />
+          )}
+        </Pressable>
+      </Pressable>
       <View
+        ref={content}
         style={{
           position: "absolute",
-          width: "100%",
-          top: 30,
-          gap: 3,
+          overflow: "hidden",
           alignItems: "center",
+          top: 30,
+          width: 250,
           borderColor: colors.background,
-          borderRadius: 5,
-          borderTopLeftRadius: open ? 0 : 5,
-          borderTopRightRadius: open ? 0 : 5,
+          borderBottomLeftRadius: 5,
+          borderBottomRightRadius: 5,
           backgroundColor: colors.item,
           shadowOffset: {
             width: 0,
@@ -65,50 +87,41 @@ export default function Sorter({
           shadowOpacity: 0.3,
           shadowRadius: 10,
           zIndex: 1,
+          height: open ? content.current.scrollHeight + 5 : 0,
+          transition: "height 200ms ease-in-out",
         }}
       >
-        {open &&
-          Object.keys(keys).map((name) => {
-            if (name === sortKey)
-              return (
-                <Text
-                  key={name}
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "bold",
-                    color: colors.accents,
-                  }}
-                >
-                  {name}
-                </Text>
-              );
-
+        {Object.keys(keys).map((name) => {
+          if (name === sortKey)
             return (
-              <Pressable onPress={() => setSortKey(name)} key={name}>
-                <Text
-                  key={name}
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "bold",
-                    color: colors.primary,
-                  }}
-                >
-                  {name}
-                </Text>
-              </Pressable>
+              <Text
+                key={name}
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  color: colors.accents,
+                }}
+              >
+                {name}
+              </Text>
             );
-          })}
+
+          return (
+            <Pressable onPress={() => setSortKey(name)} key={name}>
+              <Text
+                key={name}
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  color: colors.primary,
+                }}
+              >
+                {name}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
-      <Pressable
-        style={{ marginTop: 6 }}
-        onPress={() => setReversed((prev) => !prev)}
-      >
-        {reversed ? (
-          <AntDesign name="up" size={20} color={colors.accents} />
-        ) : (
-          <AntDesign name="down" size={20} color={colors.accents} />
-        )}
-      </Pressable>
-    </Pressable>
+    </View>
   );
 }

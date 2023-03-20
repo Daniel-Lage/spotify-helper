@@ -12,11 +12,10 @@ export default function Track({ track, index, onPress, colors, mobile }) {
   return mobile ? (
     <Pressable
       style={{
-        display: "grid",
-        gridTemplateColumns: "50px auto auto",
         width: "90%",
         borderRadius: 5,
         backgroundColor: pressed ? colors.dark_item : colors.item,
+        flexDirection: "row",
         shadowOffset: {
           width: 0,
           height: 5,
@@ -44,6 +43,8 @@ export default function Track({ track, index, onPress, colors, mobile }) {
       />
       <View
         style={{
+          flex: 1,
+          justifyContent: "center",
           flexWrap: "wrap",
           marginLeft: 10,
         }}
@@ -72,25 +73,24 @@ export default function Track({ track, index, onPress, colors, mobile }) {
           fontWeight: "bold",
           fontSize: 30,
           justifyContent: "center",
-          textAlign: "right",
+          paddingRight: 10,
         }}
       >
-        {index + 1}{" "}
+        {index + 1}
       </Text>
     </Pressable>
   ) : (
     <Pressable
       style={{
-        display: "grid",
         width: "90%",
         borderRadius: 5,
         backgroundColor: pressed ? colors.dark_item : colors.item,
+        flexDirection: "row",
         shadowOffset: {
           width: 0,
           height: 5,
         },
         shadowOpacity: 0.3,
-        gridTemplateColumns: "50px 30% 30% 16% 16%",
         shadowRadius: 10,
       }}
       onPressIn={() => {
@@ -104,68 +104,72 @@ export default function Track({ track, index, onPress, colors, mobile }) {
       }}
       onPress={onPress}
     >
-      <View style={{ backgroundColor: colors.dark_item, borderRadius: 5 }}>
-        <Image
-          source={image?.url}
-          style={{
-            width: 50,
-            height: 50,
-          }}
-        />
-      </View>
-      <View
+      <Image
+        source={image?.url}
         style={{
-          flexWrap: "wrap",
+          width: 50,
+          height: 50,
+          backgroundColor: colors.dark_item,
         }}
-      >
-        <Text
+      />
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+        <View
           style={{
-            color: colors.primary,
-            fontWeight: "bold",
-            marginLeft: 10,
+            width: "33%",
+            flexWrap: "wrap",
           }}
         >
-          {song.name}
-        </Text>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: "bold",
+              marginLeft: 10,
+            }}
+          >
+            {song.name}
+          </Text>
+          <Text
+            style={{
+              color: colors.secondary,
+              fontWeight: "bold",
+              marginLeft: 10,
+            }}
+          >
+            {song.artists.map(({ name }) => name).join(", ")}
+          </Text>
+        </View>
         <Text
           style={{
+            width: "33%",
             color: colors.secondary,
             fontWeight: "bold",
             marginLeft: 10,
           }}
         >
-          {song.artists.map(({ name }) => name).join(", ")}
+          {song.album.name}
+        </Text>
+        <Text
+          style={{
+            width: "33%",
+            color: colors.secondary,
+            fontWeight: "bold",
+            marginLeft: 10,
+          }}
+        >
+          {added_at.getDate() + 1}/{added_at.getMonth() + 1}/
+          {added_at.getFullYear()}
         </Text>
       </View>
-      <Text
-        style={{
-          color: colors.secondary,
-          fontWeight: "bold",
-          marginLeft: 10,
-        }}
-      >
-        {song.album.name}
-      </Text>
-      <Text
-        style={{
-          color: colors.secondary,
-          fontWeight: "bold",
-          marginLeft: 10,
-        }}
-      >
-        {added_at.getDate() + 1}/{added_at.getMonth() + 1}/
-        {added_at.getFullYear()}
-      </Text>
       <Text
         style={{
           color: colors.accents,
           fontWeight: "bold",
           fontSize: 30,
           justifyContent: "center",
-          textAlign: "right",
+          paddingRight: 10,
         }}
       >
-        {index + 1}{" "}
+        {index + 1}
       </Text>
     </Pressable>
   );

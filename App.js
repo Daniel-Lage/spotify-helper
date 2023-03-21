@@ -39,7 +39,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={localStorage.refreshToken ? "Playlist" : "Start"}
+        initialRouteName={localStorage.refreshToken ? "Home" : "Start"}
         screenOptions={{
           headerShown: false,
         }}

@@ -1,9 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
+import { Dimensions } from "react-native";
+import { useFonts } from "expo-font";
 
 import { getColors, getThemes } from "./src/colors";
-import { isVertical } from "./src/functions";
 import Home from "./src/home";
 import Playlist from "./src/playlist";
 import Start from "./src/start";
@@ -11,11 +12,19 @@ import Start from "./src/start";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  onresize = () => setVertical(isVertical());
+  const [fonts] = useFonts({
+    "Gotham-Bold": require("./assets/fonts/Gotham-Bold.ttf"),
+    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+  });
+
+  Dimensions.addEventListener("change", ({ window: { width, height } }) => {
+    setVertical(height > width);
+  });
 
   const localtheme = localStorage.theme;
 
-  const [vertical, setVertical] = useState(isVertical());
+  const { height, width } = Dimensions.get("window");
+  const [vertical, setVertical] = useState(height > width);
 
   const [theme, setTheme] = useState(
     getThemes().some(([name, _]) => name === localtheme) ? localtheme : "blue"
@@ -30,14 +39,18 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={localStorage.refreshToken ? "Home" : "Start"}
+        initialRouteName={localStorage.refreshToken ? "Playlist" : "Start"}
         screenOptions={{
           headerShown: false,
         }}
       >
         <Stack.Screen name="Start" options={{ title: "Spotify Helper" }}>
           {({ navigation }) => (
-            <Start colors={colors} navigation={navigation} />
+            <Start
+              colors={colors}
+              navigation={navigation}
+              vertical={vertical}
+            />
           )}
         </Stack.Screen>
         <Stack.Screen name="Home" options={{ title: "Spotify Helper" }}>

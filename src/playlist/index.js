@@ -369,13 +369,13 @@ export default function Playlist({
         </Pressable>
 
         <Text
-          numberOfLines={2}
           style={{
-            fontSize: 20,
+            fontSize: vertical ? 26 : 40,
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
-            marginHorizontal: 64,
+            marginHorizontal: 50,
+            fontFamily: "Gotham-Bold",
           }}
         >
           Spotify Helper
@@ -425,7 +425,9 @@ export default function Playlist({
             >
               <Text
                 style={{
-                  color: colors.primary,
+                  fontSize: vertical ? 26 : 40,
+                  color: colors.accents,
+                  fontFamily: "Roboto-Regular",
                   fontWeight: "bold",
                 }}
               >
@@ -433,15 +435,18 @@ export default function Playlist({
               </Text>
               <Text
                 style={{
+                  fontSize: 20,
                   color: colors.secondary,
-                  fontWeight: "bold",
+                  fontFamily: "Roboto-Regular",
                 }}
               >
                 {playlist.description}
               </Text>
               <Text
                 style={{
+                  fontSize: 20,
                   color: colors.primary,
+                  fontFamily: "Roboto-Regular",
                   fontWeight: "bold",
                 }}
               >
@@ -449,7 +454,9 @@ export default function Playlist({
               </Text>
               <Text
                 style={{
+                  fontSize: 20,
                   color: colors.accents,
+                  fontFamily: "Roboto-Regular",
                 }}
               >
                 {loading ? (
@@ -471,6 +478,9 @@ export default function Playlist({
                 borderRadius: 5,
                 borderWidth: 2,
                 borderColor: colors.accents,
+                fontFamily: "Roboto-Regular",
+                backgroundColor: colors.background,
+                fontSize: 20,
               }}
             />
             <Sorter
@@ -544,8 +554,9 @@ export default function Playlist({
               <View style={{ marginLeft: 10, gap: 10 }}>
                 <Text
                   style={{
-                    fontSize: 50,
+                    fontSize: vertical ? 26 : 40,
                     color: colors.accents,
+                    fontFamily: "Roboto-Regular",
                     fontWeight: "bold",
                   }}
                 >
@@ -555,7 +566,7 @@ export default function Playlist({
                   style={{
                     fontSize: 20,
                     color: colors.secondary,
-                    fontWeight: "bold",
+                    fontFamily: "Roboto-Regular",
                   }}
                 >
                   {playlist.description}
@@ -564,6 +575,8 @@ export default function Playlist({
                   style={{
                     fontSize: 20,
                     color: colors.primary,
+                    fontFamily: "Roboto-Regular",
+                    fontWeight: "bold",
                   }}
                 >
                   {playlist.owner.display_name}
@@ -572,6 +585,7 @@ export default function Playlist({
                   style={{
                     fontSize: 15,
                     color: colors.accents,
+                    fontFamily: "Roboto-Regular",
                   }}
                 >
                   {loading ? (
@@ -592,6 +606,9 @@ export default function Playlist({
                     borderRadius: 5,
                     borderWidth: 2,
                     borderColor: colors.accents,
+                    fontFamily: "Roboto-Regular",
+                    backgroundColor: colors.background,
+                    fontSize: 20,
                   }}
                 />
                 <Sorter

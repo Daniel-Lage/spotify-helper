@@ -27,6 +27,7 @@ export default function Sorter({
         style={{
           flexDirection: "row",
           justifyContent: "center",
+          alignItems: "center",
           height: 30,
           width: 250,
           backgroundColor: colors.item,
@@ -40,16 +41,16 @@ export default function Sorter({
         <Text
           style={{
             fontSize: 20,
-            fontWeight: "bold",
             color: colors.accents,
             userSelect: "none",
+            fontFamily: "Roboto-Regular",
           }}
         >
           Sort By:
           <Text
             style={{
               fontSize: 20,
-              fontWeight: "bold",
+              fontFamily: "Roboto-Regular",
             }}
           >
             {sortKey}
@@ -57,8 +58,8 @@ export default function Sorter({
         </Text>
 
         <Pressable
-          style={{ marginTop: 6 }}
           onPress={() => setReversed((prev) => !prev)}
+          style={{ width: 0 }}
         >
           {reversed ? (
             <AntDesign name="up" size={20} color={colors.accents} />
@@ -91,17 +92,18 @@ export default function Sorter({
         }}
       >
         {Object.keys(keys).map((name, index, array) => (
-          <Text
-            key={name}
-            style={{
-              fontSize: 15,
-              fontWeight: "bold",
-              color: name === sortKey ? colors.accents : colors.primary,
-              marginBottom: index === array.length - 1 ? 5 : 0,
-            }}
-          >
-            {name}
-          </Text>
+          <Pressable key={name} onPress={() => setSortKey(name)}>
+            <Text
+              style={{
+                fontSize: 15,
+                color: name === sortKey ? colors.accents : colors.primary,
+                marginBottom: index === array.length - 1 ? 5 : 0,
+                fontFamily: "Roboto-Regular",
+              }}
+            >
+              {name}
+            </Text>
+          </Pressable>
         ))}
       </View>
     </View>

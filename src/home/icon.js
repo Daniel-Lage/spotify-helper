@@ -1,4 +1,4 @@
-import { Pressable, Text, Dimensions } from "react-native";
+import { Pressable, Text } from "react-native";
 import Cover from "../cover";
 
 export default function Icon({
@@ -32,8 +32,9 @@ export default function Icon({
           width: 140,
           fontSize: 15,
           color: colors.primary,
-          fontWeight: "bold",
           padding: 5,
+          fontFamily: "Roboto-Regular",
+          fontWeight: "bold",
         }}
       >
         {name}
@@ -42,11 +43,11 @@ export default function Icon({
         numberOfLines={1}
         style={{
           width: 140,
-          fontSize: 15,
+          fontSize: 17,
           color: colors.secondary,
-          fontWeight: "bold",
           padding: 5,
           paddingBottom: 15,
+          fontFamily: "Roboto-Regular",
         }}
       >
         {author}
@@ -72,10 +73,10 @@ export default function Icon({
         numberOfLines={1}
         style={{
           width: 250,
-          fontSize: 15,
+          fontSize: 17,
           color: colors.primary,
-          fontWeight: "bold",
           padding: 5,
+          fontFamily: "Roboto-Regular",
         }}
       >
         {name}
@@ -86,9 +87,9 @@ export default function Icon({
           width: 250,
           fontSize: 15,
           color: colors.secondary,
-          fontWeight: "bold",
           padding: 5,
           paddingBottom: 15,
+          fontFamily: "Roboto-Regular",
         }}
       >
         {author}

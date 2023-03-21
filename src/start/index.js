@@ -4,7 +4,7 @@ import Header from "../header";
 
 import request from "request";
 
-export default function Start({ navigation, colors }) {
+export default function Start({ navigation, colors, vertical }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -69,13 +69,13 @@ export default function Start({ navigation, colors }) {
       >
         <Header colors={colors}>
           <Text
-            numberOfLines={2}
             style={{
-              fontSize: 20,
+              fontSize: vertical ? 26 : 40,
               fontWeight: "bold",
               color: colors.secondary,
               textAlign: "center",
-              marginHorizontal: 64,
+              marginHorizontal: 50,
+              fontFamily: "Gotham-Bold",
             }}
           >
             Spotify Helper
@@ -101,11 +101,11 @@ export default function Start({ navigation, colors }) {
           <Pressable onPress={login}>
             <Text
               style={{
-                fontWeight: "bold",
                 padding: 10,
                 borderRadius: 5,
                 backgroundColor: colors.primary,
                 color: colors.secondary,
+                fontFamily: "Roboto-Regular",
               }}
             >
               Login with Spotify

@@ -282,12 +282,13 @@ export default function Home({
         />
         <Text
           style={{
-            fontSize: 20,
+            fontSize: vertical ? 26 : 40,
             fontWeight: "bold",
             color: colors.secondary,
             textAlign: "center",
             zIndex: 1,
             marginHorizontal: 50,
+            fontFamily: "Gotham-Bold",
           }}
         >
           Spotify Helper
@@ -386,7 +387,10 @@ export default function Home({
               textAlign: "center",
               borderRadius: 5,
               borderWidth: 2,
+              backgroundColor: colors.dark_item,
               borderColor: colors.accents,
+              fontFamily: "Roboto-Regular",
+              fontSize: 20,
             }}
           />
           <Sorter
@@ -420,10 +424,14 @@ export default function Home({
               height: 30,
               width: 250,
               color: colors.accents,
+              backgroundColor: colors.secondary,
               textAlign: "center",
               borderRadius: 5,
               borderWidth: 2,
+              backgroundColor: colors.dark_item,
               borderColor: colors.accents,
+              fontFamily: "Roboto-Regular",
+              fontSize: 20,
             }}
           />
           <Sorter

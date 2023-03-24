@@ -1,12 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 import request from "request";
@@ -16,6 +9,7 @@ import Cover from "../cover";
 import Header from "../header";
 import Track from "./track";
 import Sorter from "../sorter";
+import Filter from "../filter";
 
 const sortKeys = {
   Artist: (a, b) => {
@@ -466,23 +460,7 @@ export default function Playlist({
                 )}
               </Text>
             </View>
-            <TextInput
-              value={filter}
-              onChangeText={setFilter}
-              placeholder="Search"
-              style={{
-                height: 30,
-                width: 250,
-                color: colors.accents,
-                textAlign: "center",
-                borderRadius: 5,
-                borderWidth: 2,
-                borderColor: colors.accents,
-                fontFamily: "Roboto-Regular",
-                backgroundColor: colors.background,
-                fontSize: 20,
-              }}
-            />
+            <Filter filter={filter} setFilter={setFilter} colors={colors} />
             <Sorter
               colors={colors}
               sortKey={sortKey}
@@ -594,23 +572,7 @@ export default function Playlist({
                     tracks.length + " songs"
                   )}
                 </Text>
-                <TextInput
-                  value={filter}
-                  onChangeText={setFilter}
-                  placeholder="Search"
-                  style={{
-                    height: 30,
-                    width: 250,
-                    color: colors.accents,
-                    textAlign: "center",
-                    borderRadius: 5,
-                    borderWidth: 2,
-                    borderColor: colors.accents,
-                    fontFamily: "Roboto-Regular",
-                    backgroundColor: colors.background,
-                    fontSize: 20,
-                  }}
-                />
+                <Filter filter={filter} setFilter={setFilter} colors={colors} />
                 <Sorter
                   colors={colors}
                   sortKey={sortKey}

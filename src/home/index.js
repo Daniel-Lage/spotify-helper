@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Image, Pressable, Text, TextInput, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 import request from "request";
@@ -9,6 +9,7 @@ import Header from "../header";
 import Sorter from "../sorter";
 import Icon from "./icon";
 import { getThemes } from "../colors";
+import Filter from "../filter";
 
 const sortKeys = {
   Author: (a, b) => {
@@ -376,23 +377,7 @@ export default function Home({
             shadowRadius: 15,
           }}
         >
-          <TextInput
-            value={filter}
-            onChangeText={setFilter}
-            placeholder="Search"
-            style={{
-              height: 30,
-              width: 250,
-              color: colors.accents,
-              textAlign: "center",
-              borderRadius: 5,
-              borderWidth: 2,
-              backgroundColor: colors.dark_item,
-              borderColor: colors.accents,
-              fontFamily: "Roboto-Regular",
-              fontSize: 20,
-            }}
-          />
+          <Filter filter={filter} setFilter={setFilter} colors={colors} />
           <Sorter
             colors={colors}
             sortKey={sortKey}
@@ -416,24 +401,8 @@ export default function Home({
             shadowRadius: 15,
           }}
         >
-          <TextInput
-            value={filter}
-            onChangeText={setFilter}
-            placeholder="Search"
-            style={{
-              height: 30,
-              width: 250,
-              color: colors.accents,
-              backgroundColor: colors.secondary,
-              textAlign: "center",
-              borderRadius: 5,
-              borderWidth: 2,
-              backgroundColor: colors.dark_item,
-              borderColor: colors.accents,
-              fontFamily: "Roboto-Regular",
-              fontSize: 20,
-            }}
-          />
+          <Filter filter={filter} setFilter={setFilter} colors={colors} />
+
           <Sorter
             colors={colors}
             sortKey={sortKey}
